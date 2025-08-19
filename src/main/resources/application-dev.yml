@@ -1,0 +1,60 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shopsphere
+    username: postgres
+    password: admin
+    
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update  # Updates schema when entities change, doesn't drop on shutdown
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+      
+  flyway:
+    enabled: false
+      
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+      
+  # Cache Configuration for Development
+  cache:
+    type: redis
+    redis:
+      time-to-live: 1800000 # 30 minutes in milliseconds for faster development
+      cache-null-values: false
+      use-key-prefix: true
+      key-prefix: "dev:ecommerce:"
+      
+logging:
+  level:
+    in.ShopSphere.ecommerce: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    
+jwt:
+  secret: 9FibWqF3sJi3gJnxY6EQdmZDtJLCRNAGLM55YYco0kjmUcqhWFeMJVtbc1QHIm6/aNVB3l2PkzmLEoxZIuZmvg==
+  expiration: 86400000
+  
+app:
+  cors:
+    allowed-origins: 
+      - http://localhost:3000
+      - http://localhost:3001

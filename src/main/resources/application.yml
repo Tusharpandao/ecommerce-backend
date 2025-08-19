@@ -1,0 +1,144 @@
+spring:
+  application:
+    name: ecommerce-platform
+  
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shopsphere
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+    
+  # JPA configuration moved to profile-specific files
+  # jpa:
+  #   hibernate:
+  #     ddl-auto: validate
+  #   show-sql: false
+  #   properties:
+  #     hibernate:
+  #       dialect: org.hibernate.dialect.PostgreSQLDialect
+  #       format_sql: true
+  #       jdbc:
+  #         batch_size: 20
+  #       order_inserts: true
+  #       order_updates: true
+        
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+      
+  # Cache Configuration
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000 # 1 hour in milliseconds
+      cache-null-values: false
+      use-key-prefix: true
+      key-prefix: "ecommerce:"
+    
+  flyway:
+    enabled: false  # Disabled to prevent conflicts with Hibernate DDL
+    # enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: pandaotushar1@gmail.com
+    password: kszwnnxniwantgyl
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            
+  # OAuth2 configuration disabled for now - uncomment when you need OAuth2
+  security:
+    oauth2:
+      client:
+        registration:
+            google:
+              client-id: ${GOOGLE_CLIENT_ID}
+              client-secret: ${GOOGLE_CLIENT_SECRET}
+              scope:
+                - email
+                - profile
+              
+  jackson:
+    time-zone: UTC
+    date-format: yyyy-MM-dd HH:mm:ss
+    
+server:
+  port: 8080
+  # servlet:
+  #   context-path: /api  # Commented out to fix double API path issue
+    
+logging:
+  level:
+    in.ShopSphere.ecommerce: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/ecommerce.log
+    
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your-super-secure-jwt-secret-key-change-in-production}
+  expiration: 86400000 # 24 hours in milliseconds
+  refresh-expiration: 604800000 # 7 days in milliseconds
+  cookie-name: auth-token
+  
+# App Configuration
+app:
+  cors:
+    allowed-origins: 
+      - http://localhost:3000
+      - https://your-frontend-domain.com
+    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+    allowed-headers: "*"
+    allow-credentials: true
+    max-age: 3600
+    
+# Redis Cache Configuration
+cache:
+  redis:
+    ttl: 3600 # 1 hour in seconds
+    product-cache: 1800 # 30 minutes for products
+    category-cache: 7200 # 2 hours for categories
+    
+# File Upload Configuration
+file:
+  upload:
+    max-size: 5MB
+    allowed-types: image/jpeg,image/png,image/gif
+    upload-dir: uploads/
+    
+# Pagination Configuration
+pagination:
+  default-page-size: 12
+  max-page-size: 100
+  
+# Security Configuration
+security:
+  csrf:
+    enabled: true
+  rate-limit:
+    enabled: true
+    max-requests: 100
+    window-size: 900 # 15 minutes in seconds

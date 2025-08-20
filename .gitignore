@@ -33,3 +33,9 @@ build/
 
 ### VS Code ###
 .vscode/
+# Ignore docs and temporary files
+DATA_IMPORT_README.md
+PRODUCT_FIELDS_SUMMARY.md
+demo.json
+products.json
+websocket-test.html

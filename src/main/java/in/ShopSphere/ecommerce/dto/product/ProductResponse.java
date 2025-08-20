@@ -19,6 +19,15 @@ public class ProductResponse {
     private String barcode;
     private BigDecimal weight;
     private String dimensions;
+    private String brand;
+    private List<String> tags;
+    private BigDecimal discountPercentage;
+    private String warrantyInformation;
+    private String shippingInformation;
+    private String returnPolicy;
+    private Integer minimumOrderQuantity;
+    private String availabilityStatus;
+    private String thumbnail;
     private Integer stockQuantity;
     private Integer minStockLevel;
     private Integer maxStockLevel;

@@ -44,6 +44,8 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/public/**").permitAll()
                 .requestMatchers("/health").permitAll()
+                .requestMatchers("/cache/health").permitAll()
+                .requestMatchers("/ws/**").permitAll()  // Allow WebSocket handshake
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/error").permitAll()

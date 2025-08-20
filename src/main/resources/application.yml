@@ -97,6 +97,8 @@ logging:
   file:
     name: logs/ecommerce.log
     
+
+
 # JWT Configuration
 jwt:
   secret: ${JWT_SECRET:your-super-secure-jwt-secret-key-change-in-production}
@@ -106,6 +108,9 @@ jwt:
   
 # App Configuration
 app:
+  data:
+    import:
+      enabled: false  # Set to true to enable automatic import on startup
   cors:
     allowed-origins: 
       - http://localhost:3000
@@ -114,6 +119,11 @@ app:
     allowed-headers: "*"
     allow-credentials: true
     max-age: 3600
+
+# Socket.IO Configuration
+socketio:
+  host: localhost
+  port: 9092
     
 # Redis Cache Configuration
 cache:

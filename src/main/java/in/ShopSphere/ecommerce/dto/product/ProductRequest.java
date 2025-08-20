@@ -60,6 +60,35 @@ public class ProductRequest {
     @Size(max = 100, message = "Dimensions must not exceed 100 characters")
     private String dimensions;
     
+    @Size(max = 100, message = "Brand must not exceed 100 characters")
+    private String brand;
+    
+    private List<String> tags;
+    
+    @DecimalMin(value = "0.00", message = "Discount percentage must be greater than or equal to 0")
+    @DecimalMax(value = "100.00", message = "Discount percentage cannot exceed 100")
+    @Digits(integer = 3, fraction = 2, message = "Discount percentage must have up to 3 digits and 2 decimal places")
+    private BigDecimal discountPercentage;
+    
+    @Size(max = 1000, message = "Warranty information must not exceed 1000 characters")
+    private String warrantyInformation;
+    
+    @Size(max = 1000, message = "Shipping information must not exceed 1000 characters")
+    private String shippingInformation;
+    
+    @Size(max = 1000, message = "Return policy must not exceed 1000 characters")
+    private String returnPolicy;
+    
+    @Min(value = 1, message = "Minimum order quantity must be at least 1")
+    @Max(value = 999999, message = "Minimum order quantity cannot exceed 999,999")
+    private Integer minimumOrderQuantity = 1;
+    
+    @Size(max = 50, message = "Availability status must not exceed 50 characters")
+    private String availabilityStatus = "In Stock";
+    
+    @Size(max = 500, message = "Thumbnail URL must not exceed 500 characters")
+    private String thumbnail;
+    
     private Boolean isActive = true;
     
     private Boolean isFeatured = false;

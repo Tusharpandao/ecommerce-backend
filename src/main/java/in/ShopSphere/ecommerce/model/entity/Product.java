@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,7 +26,10 @@ import java.util.List;
     @Index(name = "idx_products_price", columnList = "price"),
     @Index(name = "idx_products_rating", columnList = "rating"),
     @Index(name = "idx_products_stock_quantity", columnList = "stock_quantity"),
-    @Index(name = "idx_products_sku", columnList = "sku")
+    @Index(name = "idx_products_sku", columnList = "sku"),
+    @Index(name = "idx_products_brand", columnList = "brand"),
+    @Index(name = "idx_products_discount_percentage", columnList = "discount_percentage"),
+    @Index(name = "idx_products_availability_status", columnList = "availability_status")
 })
 @Data
 @Builder
@@ -73,6 +78,41 @@ public class Product {
     @Size(max = 100, message = "Dimensions must not exceed 100 characters")
     @Column
     private String dimensions;
+    
+    @Size(max = 100, message = "Brand must not exceed 100 characters")
+    @Column
+    private String brand;
+    
+    @Column(columnDefinition = "JSONB")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private List<String> tags;
+    
+    @DecimalMin(value = "0.00", message = "Discount percentage must be greater than or equal to 0")
+    @Column(name = "discount_percentage", precision = 5, scale = 2)
+    private BigDecimal discountPercentage;
+    
+    @Size(max = 1000, message = "Warranty information must not exceed 1000 characters")
+    @Column(name = "warranty_information", columnDefinition = "TEXT")
+    private String warrantyInformation;
+    
+    @Size(max = 1000, message = "Shipping information must not exceed 1000 characters")
+    @Column(name = "shipping_information", columnDefinition = "TEXT")
+    private String shippingInformation;
+    
+    @Size(max = 1000, message = "Return policy must not exceed 1000 characters")
+    @Column(name = "return_policy", columnDefinition = "TEXT")
+    private String returnPolicy;
+    
+    @Column(name = "minimum_order_quantity")
+    private Integer minimumOrderQuantity = 1;
+    
+    @Size(max = 50, message = "Availability status must not exceed 50 characters")
+    @Column(name = "availability_status")
+    private String availabilityStatus = "In Stock";
+    
+    @Size(max = 500, message = "Thumbnail URL must not exceed 500 characters")
+    @Column
+    private String thumbnail;
     
     @NotNull(message = "Stock quantity is required")
     @Column(name = "stock_quantity", nullable = false)

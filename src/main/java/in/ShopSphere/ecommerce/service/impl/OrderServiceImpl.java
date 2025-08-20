@@ -9,6 +9,7 @@ import in.ShopSphere.ecommerce.exception.ResourceNotFoundException;
 import in.ShopSphere.ecommerce.mapper.OrderMapper;
 import in.ShopSphere.ecommerce.model.entity.*;
 import in.ShopSphere.ecommerce.repository.*;
+import in.ShopSphere.ecommerce.controller.WebSocketController;
 import in.ShopSphere.ecommerce.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final AddressRepository addressRepository;
     private final OrderMapper orderMapper;
+    private final WebSocketController webSocketController;
 
     @Override
     @CacheEvict(value = {"orders", "userOrders", "allOrders"}, allEntries = true)
@@ -109,6 +111,9 @@ public class OrderServiceImpl implements OrderService {
         cart.getItems().clear();
         cart.setUpdatedAt(LocalDateTime.now());
         cartRepository.save(cart);
+        
+        // Emit WebSocket event for new order
+        webSocketController.sendOrderStatusUpdate(savedOrder.getId().toString(), "CREATED", currentUser.getId().toString());
         
         log.info("Order created successfully with ID: {}", savedOrder.getId());
         
@@ -285,6 +290,9 @@ public class OrderServiceImpl implements OrderService {
         }
         
         orderRepository.save(order);
+        
+        // Emit WebSocket event for real-time updates
+        webSocketController.sendOrderStatusUpdate(id.toString(), status.name(), currentUser.getId().toString());
         
         log.info("Order status updated successfully. Order ID: {}", id);
         

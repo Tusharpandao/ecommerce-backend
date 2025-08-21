@@ -66,7 +66,7 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
-    public Optional<Product> getCachedProduct(Long productId) {
+    public Optional<Product> getCachedProduct(String productId) {
         if (productId == null) {
             return Optional.empty();
         }
@@ -96,7 +96,7 @@ public class CacheServiceImpl implements CacheService {
     }
 
     // Enhanced cart caching
-    public void cacheCart(Long userId, Object cartData) {
+    public void cacheCart(String userId, Object cartData) {
         if (userId == null || cartData == null) {
             return;
         }
@@ -117,7 +117,7 @@ public class CacheServiceImpl implements CacheService {
         }
     }
     
-    public Optional<Object> getCachedCart(Long userId) {
+    public Optional<Object> getCachedCart(String userId) {
         if (userId == null) {
             return Optional.empty();
         }
@@ -146,7 +146,7 @@ public class CacheServiceImpl implements CacheService {
         return Optional.empty();
     }
     
-    public void invalidateCartCache(Long userId) {
+    public void invalidateCartCache(String userId) {
         if (userId == null) {
             return;
         }
@@ -221,7 +221,7 @@ public class CacheServiceImpl implements CacheService {
 
     // Enhanced cache invalidation with Spring Cache integration
     @Override
-    public void invalidateProductCache(Long productId) {
+    public void invalidateProductCache(String productId) {
         if (productId == null) {
             return;
         }
@@ -400,7 +400,7 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
-    public Optional<Category> getCachedCategory(Long categoryId) {
+    public Optional<Category> getCachedCategory(String categoryId) {
         if (categoryId == null) {
             return Optional.empty();
         }
@@ -464,7 +464,7 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
-    public void invalidateCategoryCache(Long categoryId) {
+    public void invalidateCategoryCache(String categoryId) {
         if (categoryId == null) {
             return;
         }

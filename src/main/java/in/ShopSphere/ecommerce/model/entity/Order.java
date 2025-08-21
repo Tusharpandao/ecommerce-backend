@@ -29,8 +29,8 @@ import java.util.List;
 public class Order {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     
     @Column(name = "order_number", unique = true, nullable = false)
     private String orderNumber;

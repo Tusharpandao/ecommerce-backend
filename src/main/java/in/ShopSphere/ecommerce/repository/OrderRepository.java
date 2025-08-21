@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, String> {
     
     Optional<Order> findByOrderNumber(String orderNumber);
     
@@ -40,10 +40,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUserAndPaymentStatus(User user, PaymentStatus paymentStatus);
     
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND o.status = :status")
-    List<Order> findByUserIdAndStatus(@Param("userId") Long userId, @Param("status") OrderStatus status);
+    List<Order> findByUserIdAndStatus(@Param("userId") String userId, @Param("status") OrderStatus status);
     
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND o.paymentStatus = :paymentStatus")
-    List<Order> findByUserIdAndPaymentStatus(@Param("userId") Long userId, @Param("paymentStatus") PaymentStatus paymentStatus);
+    List<Order> findByUserIdAndPaymentStatus(@Param("userId") String userId, @Param("paymentStatus") PaymentStatus paymentStatus);
     
     @Query("SELECT o FROM Order o WHERE o.createdAt BETWEEN :startDate AND :endDate")
     List<Order> findByDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
@@ -73,7 +73,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> searchOrders(@Param("searchTerm") String searchTerm, Pageable pageable);
     
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND (o.orderNumber LIKE %:searchTerm% OR o.status = :status)")
-    Page<Order> searchOrdersByUser(@Param("userId") Long userId, @Param("searchTerm") String searchTerm, @Param("status") OrderStatus status, Pageable pageable);
+    Page<Order> searchOrdersByUser(@Param("userId") String userId, @Param("searchTerm") String searchTerm, @Param("status") OrderStatus status, Pageable pageable);
     
     @Query("SELECT COUNT(o) FROM Order o WHERE o.status = :status AND o.createdAt >= :startDate")
     long countByStatusAndDateRange(@Param("status") OrderStatus status, @Param("startDate") LocalDateTime startDate);
@@ -82,7 +82,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     long countByPaymentStatusAndDateRange(@Param("paymentStatus") PaymentStatus paymentStatus, @Param("startDate") LocalDateTime startDate);
     
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.createdAt DESC")
-    Page<Order> findRecentOrdersByUser(@Param("userId") Long userId, Pageable pageable);
+    Page<Order> findRecentOrdersByUser(@Param("userId") String userId, Pageable pageable);
     
     @Query("SELECT o FROM Order o WHERE o.status IN :statuses")
     Page<Order> findByStatuses(@Param("statuses") List<OrderStatus> statuses, Pageable pageable);
@@ -91,7 +91,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findByPaymentStatuses(@Param("paymentStatuses") List<PaymentStatus> paymentStatuses, Pageable pageable);
     
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND o.status IN :statuses")
-    List<Order> findByUserIdAndStatuses(@Param("userId") Long userId, @Param("statuses") List<OrderStatus> statuses);
+    List<Order> findByUserIdAndStatuses(@Param("userId") String userId, @Param("statuses") List<OrderStatus> statuses);
     
     boolean existsByOrderNumber(String orderNumber);
     
@@ -105,5 +105,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findByAmountRange(@Param("minAmount") Double minAmount, @Param("maxAmount") Double maxAmount, Pageable pageable);
     
     @Query("SELECT COUNT(o) FROM Order o WHERE o.user.id = :userId AND o.status != :status")
-    long countByUserIdAndStatusNot(@Param("userId") Long userId, @Param("status") OrderStatus status);
+    long countByUserIdAndStatusNot(@Param("userId") String userId, @Param("status") OrderStatus status);
 }

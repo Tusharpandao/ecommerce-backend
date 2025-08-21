@@ -81,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @CacheEvict(value = {"products", "product"}, allEntries = true)
-    public ProductResponse updateProduct(Long id, ProductRequest request) {
+    public ProductResponse updateProduct(String id, ProductRequest request) {
         log.info("Updating product with ID: {}", id);
         
         Product product = productRepository.findById(id)
@@ -116,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Cacheable(value = "product", key = "#id")
-    public ProductResponse getProductById(Long id) {
+    public ProductResponse getProductById(String id) {
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
         
@@ -176,7 +176,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Cacheable(value = "products", key = "#categoryId + #pageable.pageNumber + #pageable.pageSize")
-    public PaginationResponse<ProductResponse> getProductsByCategory(Long categoryId, Pageable pageable) {
+    public PaginationResponse<ProductResponse> getProductsByCategory(String categoryId, Pageable pageable) {
         Page<Product> products = productRepository.findByCategoryIdAndIsActiveTrue(categoryId, pageable);
         List<ProductResponse> productResponses = productMapper.toProductResponseList(products.getContent());
         
@@ -193,7 +193,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Cacheable(value = "products", key = "#sellerId + #pageable.pageNumber + #pageable.pageSize")
-    public PaginationResponse<ProductResponse> getProductsBySeller(Long sellerId, Pageable pageable) {
+    public PaginationResponse<ProductResponse> getProductsBySeller(String sellerId, Pageable pageable) {
         // This would need a custom query or we'd need to get the User first
         // For now, implementing a basic version
         Page<Product> products = productRepository.findByIsActiveTrue(pageable);
@@ -298,7 +298,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @CacheEvict(value = {"products", "product"}, allEntries = true)
-    public ApiResponse deleteProduct(Long id) {
+    public ApiResponse deleteProduct(String id) {
         log.info("Deleting product with ID: {}", id);
         
         Product product = productRepository.findById(id)
@@ -318,7 +318,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @CacheEvict(value = {"products", "product"}, allEntries = true)
-    public ApiResponse toggleProductStatus(Long id) {
+    public ApiResponse toggleProductStatus(String id) {
         log.info("Toggling product status with ID: {}", id);
         
         Product product = productRepository.findById(id)
@@ -342,7 +342,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @CacheEvict(value = {"products", "product"}, allEntries = true)
-    public ApiResponse toggleFeaturedStatus(Long id) {
+    public ApiResponse toggleFeaturedStatus(String id) {
         log.info("Toggling featured status for product with ID: {}", id);
         
         Product product = productRepository.findById(id)
@@ -366,7 +366,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @CacheEvict(value = {"products", "product"}, allEntries = true)
-    public ApiResponse updateStock(Long id, Integer quantity) {
+    public ApiResponse updateStock(String id, Integer quantity) {
         log.info("Updating stock for product with ID: {} to quantity: {}", id, quantity);
         
         Product product = productRepository.findById(id)
@@ -393,7 +393,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @CacheEvict(value = {"products", "product"}, allEntries = true)
-    public ApiResponse updatePrice(Long id, BigDecimal price, BigDecimal salePrice) {
+    public ApiResponse updatePrice(String id, BigDecimal price, BigDecimal salePrice) {
         log.info("Updating price for product with ID: {} to price: {}, salePrice: {}", id, price, salePrice);
         
         Product product = productRepository.findById(id)

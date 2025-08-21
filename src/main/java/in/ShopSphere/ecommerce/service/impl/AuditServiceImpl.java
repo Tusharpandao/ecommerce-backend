@@ -31,7 +31,7 @@ public class AuditServiceImpl implements AuditService {
                 .user(user)
                 .action(action)
                 .entityType(resourceType)
-                .entityId(resourceId != null ? Long.parseLong(resourceId) : null)
+                .entityId(resourceId != null ? resourceId : null)
                 .newValues(Map.of("details", details, "ipAddress", ipAddress, "userAgent", userAgent))
                 .ipAddress(ipAddress != null ? java.net.InetAddress.getByName(ipAddress) : null)
                 .userAgent(userAgent)
@@ -53,7 +53,7 @@ public class AuditServiceImpl implements AuditService {
             AuditLog auditLog = AuditLog.builder()
                 .action(event)
                 .entityType("SYSTEM")
-                .entityId(0L)
+                .entityId("0")
                 .newValues(Map.of("description", description, "details", details, "severity", severity != null ? severity : "INFO"))
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -73,7 +73,7 @@ public class AuditServiceImpl implements AuditService {
             AuditLog auditLog = AuditLog.builder()
                 .action(event)
                 .entityType("SECURITY")
-                .entityId(0L)
+                .entityId("0")
                 .newValues(Map.of("description", description, "details", details, "severity", severity != null ? severity : "WARNING"))
                 .ipAddress(ipAddress != null ? java.net.InetAddress.getByName(ipAddress) : null)
                 .userAgent(userAgent)
@@ -95,7 +95,7 @@ public class AuditServiceImpl implements AuditService {
                 .user(user)
                 .action("DATA_ACCESS")
                 .entityType(dataType)
-                .entityId(dataId != null ? Long.parseLong(dataId) : null)
+                .entityId(dataId != null ? dataId : null)
                 .newValues(Map.of("accessType", accessType, "ipAddress", ipAddress))
                 .ipAddress(ipAddress != null ? java.net.InetAddress.getByName(ipAddress) : null)
                 .createdAt(LocalDateTime.now())
@@ -120,7 +120,7 @@ public class AuditServiceImpl implements AuditService {
                 .user(user)
                 .action(event)
                 .entityType("AUTHENTICATION")
-                .entityId(0L)
+                .entityId("0")
                 .newValues(Map.of("description", description, "details", details, "success", success))
                 .ipAddress(ipAddress != null ? java.net.InetAddress.getByName(ipAddress) : null)
                 .userAgent(userAgent)
@@ -137,7 +137,7 @@ public class AuditServiceImpl implements AuditService {
 
     // Simplified implementations for the remaining methods
     @Override
-    public List<AuditLog> getUserAuditLogs(Long userId, LocalDateTime startDate, LocalDateTime endDate, 
+    public List<AuditLog> getUserAuditLogs(String userId, LocalDateTime startDate, LocalDateTime endDate, 
                                          int page, int size) {
         try {
             return auditLogRepository.findByUserId(userId);
@@ -152,7 +152,7 @@ public class AuditServiceImpl implements AuditService {
                                              LocalDateTime startDate, LocalDateTime endDate, 
                                              int page, int size) {
         try {
-            return auditLogRepository.findByEntityTypeAndEntityId(resourceType, Long.valueOf(resourceId));
+            return auditLogRepository.findByEntityTypeAndEntityId(resourceType, resourceId);
         } catch (Exception e) {
             log.error("Failed to get resource audit logs: {}", e.getMessage());
             return List.of();

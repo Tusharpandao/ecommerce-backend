@@ -17,7 +17,7 @@ public class CategoryRequest {
     @Size(max = 500, message = "Category image URL must not exceed 500 characters")
     private String image;
     
-    private Long parentId;
+    private String parentId;
     
     @Min(value = 1, message = "Sort order must be at least 1")
     @Max(value = 1000, message = "Sort order cannot exceed 1000")

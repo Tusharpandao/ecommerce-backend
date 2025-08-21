@@ -23,8 +23,8 @@ import java.util.List;
 public class Cart {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
@@ -45,7 +45,7 @@ public class Cart {
     public BigDecimal getTotal() {
         if (items == null || items.isEmpty()) {
             return BigDecimal.ZERO;
-        }
+        }   
         return items.stream()
                 .map(item -> item.getPriceAtTime().multiply(new BigDecimal(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -85,13 +85,13 @@ public class Cart {
         }
     }
     
-    public void removeItem(Long productId) {
+    public void removeItem(String productId) {
         if (items != null) {
             items.removeIf(item -> item.getProduct().getId().equals(productId));
         }
     }
     
-    public void updateItemQuantity(Long productId, int quantity) {
+    public void updateItemQuantity(String productId, int quantity) {
         if (items != null) {
             items.stream()
                     .filter(item -> item.getProduct().getId().equals(productId))
@@ -112,7 +112,7 @@ public class Cart {
         }
     }
     
-    public CartItem getItemByProductId(Long productId) {
+    public CartItem getItemByProductId(String productId) {
         if (items == null) {
             return null;
         }
@@ -122,7 +122,7 @@ public class Cart {
                 .orElse(null);
     }
     
-    public boolean containsProduct(Long productId) {
+    public boolean containsProduct(String productId) {
         return getItemByProductId(productId) != null;
     }
 }

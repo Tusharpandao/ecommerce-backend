@@ -3,13 +3,12 @@ package in.ShopSphere.ecommerce.dto.product;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 public class ProductResponse {
     
-    private Long id;
+    private String id;
     private String name;
     private String description;
     private BigDecimal price;
@@ -35,8 +34,10 @@ public class ProductResponse {
     private Integer reviewCount;
     private Boolean isActive;
     private Boolean isFeatured;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    
+    // Removed LocalDateTime fields to avoid serialization issues
+    // private LocalDateTime createdAt;
+    // private LocalDateTime updatedAt;
     
     private CategorySummary category;
     private UserSummary seller;
@@ -45,7 +46,7 @@ public class ProductResponse {
     
     @Data
     public static class CategorySummary {
-        private Long id;
+        private String id;
         private String name;
         private String description;
         private String image;
@@ -53,7 +54,7 @@ public class ProductResponse {
     
     @Data
     public static class UserSummary {
-        private Long id;
+        private String id;
         private String firstName;
         private String lastName;
         private String email;
@@ -62,7 +63,7 @@ public class ProductResponse {
     
     @Data
     public static class ProductImageResponse {
-        private Long id;
+        private String id;
         private String imageUrl;
         private String altText;
         private Boolean isPrimary;
@@ -71,7 +72,7 @@ public class ProductResponse {
     
     @Data
     public static class ProductVariantResponse {
-        private Long id;
+        private String id;
         private String variantName;
         private String variantValue;
         private BigDecimal priceAdjustment;

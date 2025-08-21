@@ -104,7 +104,7 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Update address", description = "Updates an existing address for the current user.")
     public ResponseEntity<AddressResponse> updateAddress(
-            @Parameter(description = "Address ID") @PathVariable Long addressId,
+            @Parameter(description = "Address ID") @PathVariable String addressId,
             @Valid @RequestBody AddressRequest request) {
         log.info("Updating address: addressId={}", addressId);
         AddressResponse response = userService.updateAddress(addressId, request);
@@ -115,7 +115,7 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Delete address", description = "Deletes an address for the current user.")
     public ResponseEntity<ApiResponse> deleteAddress(
-            @Parameter(description = "Address ID") @PathVariable Long addressId) {
+            @Parameter(description = "Address ID") @PathVariable String addressId) {
         log.info("Deleting address: addressId={}", addressId);
         ApiResponse response = userService.deleteAddress(addressId);
         return ResponseEntity.ok(response);
@@ -125,7 +125,7 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Set default address", description = "Sets an address as the default for the current user.")
     public ResponseEntity<AddressResponse> setDefaultAddress(
-            @Parameter(description = "Address ID") @PathVariable Long addressId) {
+            @Parameter(description = "Address ID") @PathVariable String addressId) {
         log.info("Setting default address: addressId={}", addressId);
         AddressResponse response = userService.setDefaultAddress(addressId);
         return ResponseEntity.ok(response);
@@ -168,7 +168,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get user by ID", description = "Retrieves a user by ID. Admin only.")
     public ResponseEntity<UserResponse> getUserById(
-            @Parameter(description = "User ID") @PathVariable Long id) {
+            @Parameter(description = "User ID") @PathVariable String id) {
         log.info("Getting user by ID: {}", id);
         UserResponse response = userService.getUserById(id);
         return ResponseEntity.ok(response);
@@ -178,7 +178,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Block user", description = "Blocks a user. Admin only.")
     public ResponseEntity<ApiResponse> blockUser(
-            @Parameter(description = "User ID") @PathVariable Long id) {
+            @Parameter(description = "User ID") @PathVariable String id) {
         log.info("Blocking user: userId={}", id);
         ApiResponse response = userService.blockUser(id);
         return ResponseEntity.ok(response);
@@ -188,7 +188,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Unblock user", description = "Unblocks a user. Admin only.")
     public ResponseEntity<ApiResponse> unblockUser(
-            @Parameter(description = "User ID") @PathVariable Long id) {
+            @Parameter(description = "User ID") @PathVariable String id) {
         log.info("Unblocking user: userId={}", id);
         ApiResponse response = userService.unblockUser(id);
         return ResponseEntity.ok(response);
@@ -198,7 +198,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update user role", description = "Updates a user's role. Admin only.")
     public ResponseEntity<ApiResponse> updateUserRole(
-            @Parameter(description = "User ID") @PathVariable Long id,
+            @Parameter(description = "User ID") @PathVariable String id,
             @Parameter(description = "New role") @RequestParam UserRole role) {
         log.info("Updating user role: userId={}, newRole={}", id, role);
         ApiResponse response = userService.updateUserRole(id, role);
@@ -209,7 +209,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete user", description = "Deletes a user. Admin only.")
     public ResponseEntity<ApiResponse> deleteUser(
-            @Parameter(description = "User ID") @PathVariable Long id) {
+            @Parameter(description = "User ID") @PathVariable String id) {
         log.info("Deleting user: userId={}", id);
         ApiResponse response = userService.deleteUser(id);
         return ResponseEntity.ok(response);

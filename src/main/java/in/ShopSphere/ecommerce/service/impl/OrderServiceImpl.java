@@ -122,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Cacheable(value = "orders", key = "#id")
-    public OrderResponse getOrderById(Long id) {
+    public OrderResponse getOrderById(String id) {
         Order order = orderRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + id));
         
@@ -262,7 +262,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @CacheEvict(value = {"orders", "userOrders", "allOrders"}, allEntries = true)
-    public ApiResponse updateOrderStatus(Long id, OrderStatus status) {
+    public ApiResponse updateOrderStatus(String id, OrderStatus status) {
         log.info("Updating order status: orderId={}, status={}", id, status);
         
         Order order = orderRepository.findById(id)
@@ -301,7 +301,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @CacheEvict(value = {"orders", "userOrders", "allOrders"}, allEntries = true)
-    public ApiResponse updatePaymentStatus(Long id, PaymentStatus paymentStatus) {
+    public ApiResponse updatePaymentStatus(String id, PaymentStatus paymentStatus) {
         log.info("Updating payment status: orderId={}, status={}", id, paymentStatus);
         
         Order order = orderRepository.findById(id)
@@ -324,7 +324,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @CacheEvict(value = {"orders", "userOrders", "allOrders"}, allEntries = true)
-    public ApiResponse updateDeliveryDate(Long id, LocalDate deliveryDate) {
+    public ApiResponse updateDeliveryDate(String id, LocalDate deliveryDate) {
         log.info("Updating delivery date: orderId={}, date={}", id, deliveryDate);
         
         Order order = orderRepository.findById(id)
@@ -347,7 +347,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @CacheEvict(value = {"orders", "userOrders", "allOrders"}, allEntries = true)
-    public ApiResponse cancelOrder(Long id) {
+    public ApiResponse cancelOrder(String id) {
         log.info("Cancelling order: orderId={}", id);
         
         Order order = orderRepository.findById(id)
@@ -377,7 +377,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @CacheEvict(value = {"orders", "userOrders", "allOrders"}, allEntries = true)
-    public ApiResponse addOrderNote(Long id, String note) {
+    public ApiResponse addOrderNote(String id, String note) {
         log.info("Adding note to order: orderId={}, note={}", id, note);
         
         Order order = orderRepository.findById(id)
@@ -492,7 +492,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @CacheEvict(value = {"orders", "userOrders", "allOrders"}, allEntries = true)
-    public ApiResponse refundOrder(Long id) {
+    public ApiResponse refundOrder(String id) {
         log.info("Refunding order: orderId={}", id);
         
         Order order = orderRepository.findById(id)
@@ -519,8 +519,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @CacheEvict(value = {"orders", "userOrders", "allOrders"}, allEntries = true)
-    public ApiResponse addOrderNotes(Long id, String notes) {
-        log.info("Adding notes to order: orderId={}, notes={}", id, notes);
+    public ApiResponse addOrderNotes(String id, String notes) {
+        log.info("Adding notes to order: orderId={}", id);
         
         Order order = orderRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + id));
@@ -544,7 +544,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse getOrderDetails(Long id) {
+    public OrderResponse getOrderDetails(String id) {
         return getOrderById(id); // Same implementation
     }
 

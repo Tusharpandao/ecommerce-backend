@@ -47,7 +47,7 @@ public class ProductController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @Operation(summary = "Update product", description = "Update an existing product (Seller/Admin only)")
-    public ResponseEntity<ApiResponse> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
+    public ResponseEntity<ApiResponse> updateProduct(@PathVariable String id, @Valid @RequestBody ProductRequest request) {
         try {
             ProductResponse product = productService.updateProduct(id, request);
             return ResponseEntity.ok(ApiResponse.success(product, "Product updated successfully"));
@@ -60,7 +60,7 @@ public class ProductController {
     
     @GetMapping("/{id}")
     @Operation(summary = "Get product by ID", description = "Get product details by ID")
-    public ResponseEntity<ApiResponse> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse> getProductById(@PathVariable String id) {
         try {
             ProductResponse product = productService.getProductById(id);
             return ResponseEntity.ok(ApiResponse.success(product, "Product retrieved successfully"));
@@ -118,7 +118,7 @@ public class ProductController {
     @GetMapping("/category/{categoryId}")
     @Operation(summary = "Get products by category", description = "Get products in a specific category")
     public ResponseEntity<ApiResponse> getProductsByCategory(
-            @PathVariable Long categoryId,
+            @PathVariable String categoryId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         try {
@@ -135,7 +135,7 @@ public class ProductController {
     @GetMapping("/seller/{sellerId}")
     @Operation(summary = "Get products by seller", description = "Get products from a specific seller")
     public ResponseEntity<ApiResponse> getProductsBySeller(
-            @PathVariable Long sellerId,
+            @PathVariable String sellerId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         try {
@@ -239,7 +239,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @Operation(summary = "Delete product", description = "Delete a product (Seller/Admin only)")
-    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable String id) {
         try {
             ApiResponse result = productService.deleteProduct(id);
             return ResponseEntity.ok(result);
@@ -253,7 +253,7 @@ public class ProductController {
     @PatchMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @Operation(summary = "Toggle product status", description = "Toggle product active status (Seller/Admin only)")
-    public ResponseEntity<ApiResponse> toggleProductStatus(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse> toggleProductStatus(@PathVariable String id) {
         try {
             ApiResponse result = productService.toggleProductStatus(id);
             return ResponseEntity.ok(result);
@@ -267,7 +267,7 @@ public class ProductController {
     @PatchMapping("/{id}/featured")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Toggle featured status", description = "Toggle product featured status (Admin only)")
-    public ResponseEntity<ApiResponse> toggleFeaturedStatus(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse> toggleFeaturedStatus(@PathVariable String id) {
         try {
             ApiResponse result = productService.toggleFeaturedStatus(id);
             return ResponseEntity.ok(result);
@@ -281,7 +281,7 @@ public class ProductController {
     @PatchMapping("/{id}/stock")
     @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @Operation(summary = "Update stock", description = "Update product stock quantity (Seller/Admin only)")
-    public ResponseEntity<ApiResponse> updateStock(@PathVariable Long id, @RequestParam Integer quantity) {
+    public ResponseEntity<ApiResponse> updateStock(@PathVariable String id, @RequestParam Integer quantity) {
         try {
             ApiResponse result = productService.updateStock(id, quantity);
             return ResponseEntity.ok(result);
@@ -296,7 +296,7 @@ public class ProductController {
     @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @Operation(summary = "Update price", description = "Update product price (Seller/Admin only)")
     public ResponseEntity<ApiResponse> updatePrice(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestParam BigDecimal price,
             @RequestParam(required = false) BigDecimal salePrice) {
         try {

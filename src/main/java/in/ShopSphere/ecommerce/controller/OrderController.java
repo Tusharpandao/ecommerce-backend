@@ -48,7 +48,7 @@ public class OrderController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get order by ID", description = "Retrieves an order by its ID.")
     public ResponseEntity<OrderResponse> getOrderById(
-            @Parameter(description = "Order ID") @PathVariable Long id) {
+            @Parameter(description = "Order ID") @PathVariable String id) {
         OrderResponse response = orderService.getOrderById(id);
         return ResponseEntity.ok(response);
     }
@@ -142,7 +142,7 @@ public class OrderController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
     @Operation(summary = "Update order status", description = "Updates the status of an order. Admin/Seller only.")
     public ResponseEntity<ApiResponse> updateOrderStatus(
-            @Parameter(description = "Order ID") @PathVariable Long id,
+            @Parameter(description = "Order ID") @PathVariable String id,
             @Parameter(description = "New status") @RequestParam OrderStatus status) {
         log.info("Updating order status: orderId={}, status={}", id, status);
         ApiResponse response = orderService.updateOrderStatus(id, status);
@@ -153,7 +153,7 @@ public class OrderController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
     @Operation(summary = "Update payment status", description = "Updates the payment status of an order. Admin/Seller only.")
     public ResponseEntity<ApiResponse> updatePaymentStatus(
-            @Parameter(description = "Order ID") @PathVariable Long id,
+            @Parameter(description = "Order ID") @PathVariable String id,
             @Parameter(description = "New payment status") @RequestParam PaymentStatus paymentStatus) {
         log.info("Updating payment status: orderId={}, paymentStatus={}", id, paymentStatus);
         ApiResponse response = orderService.updatePaymentStatus(id, paymentStatus);
@@ -164,7 +164,7 @@ public class OrderController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
     @Operation(summary = "Update delivery date", description = "Updates the estimated delivery date of an order. Admin/Seller only.")
     public ResponseEntity<ApiResponse> updateDeliveryDate(
-            @Parameter(description = "Order ID") @PathVariable Long id,
+            @Parameter(description = "Order ID") @PathVariable String id,
             @Parameter(description = "New delivery date") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate deliveryDate) {
         log.info("Updating delivery date: orderId={}, date={}", id, deliveryDate);
         ApiResponse response = orderService.updateDeliveryDate(id, deliveryDate);
@@ -175,7 +175,7 @@ public class OrderController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Cancel order", description = "Cancels an order.")
     public ResponseEntity<ApiResponse> cancelOrder(
-            @Parameter(description = "Order ID") @PathVariable Long id) {
+            @Parameter(description = "Order ID") @PathVariable String id) {
         log.info("Cancelling order: orderId={}", id);
         ApiResponse response = orderService.cancelOrder(id);
         return ResponseEntity.ok(response);
@@ -185,7 +185,7 @@ public class OrderController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Refund order", description = "Refunds an order. Admin only.")
     public ResponseEntity<ApiResponse> refundOrder(
-            @Parameter(description = "Order ID") @PathVariable Long id) {
+            @Parameter(description = "Order ID") @PathVariable String id) {
         log.info("Refunding order: orderId={}", id);
         ApiResponse response = orderService.refundOrder(id);
         return ResponseEntity.ok(response);
@@ -195,7 +195,7 @@ public class OrderController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Add order notes", description = "Adds notes to an order.")
     public ResponseEntity<ApiResponse> addOrderNotes(
-            @Parameter(description = "Order ID") @PathVariable Long id,
+            @Parameter(description = "Order ID") @PathVariable String id,
             @Parameter(description = "Notes") @RequestParam String notes) {
         log.info("Adding notes to order: orderId={}, notes={}", id, notes);
         ApiResponse response = orderService.addOrderNotes(id, notes);
@@ -206,7 +206,7 @@ public class OrderController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get order details", description = "Retrieves detailed information about an order.")
     public ResponseEntity<OrderResponse> getOrderDetails(
-            @Parameter(description = "Order ID") @PathVariable Long id) {
+            @Parameter(description = "Order ID") @PathVariable String id) {
         OrderResponse response = orderService.getOrderDetails(id);
         return ResponseEntity.ok(response);
     }

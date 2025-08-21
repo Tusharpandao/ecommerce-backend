@@ -1,5 +1,6 @@
 package in.ShopSphere.ecommerce.dto.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import in.ShopSphere.ecommerce.model.entity.OrderStatus;
 import in.ShopSphere.ecommerce.model.entity.PaymentStatus;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.util.List;
 @Data
 public class OrderResponse {
     
-    private Long id;
+    private String id;
     private String orderNumber;
     private OrderStatus status;
     private PaymentStatus paymentStatus;
@@ -22,9 +23,17 @@ public class OrderResponse {
     private BigDecimal discountAmount;
     private BigDecimal totalAmount;
     private String notes;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate estimatedDeliveryDate;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate actualDeliveryDate;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
     
     private UserSummary user;
@@ -34,7 +43,7 @@ public class OrderResponse {
     
     @Data
     public static class UserSummary {
-        private Long id;
+        private String id;
         private String firstName;
         private String lastName;
         private String email;
@@ -43,7 +52,7 @@ public class OrderResponse {
     
     @Data
     public static class AddressResponse {
-        private Long id;
+        private String id;
         private String addressType;
         private String streetAddress;
         private String streetAddress2;
@@ -56,21 +65,23 @@ public class OrderResponse {
     
     @Data
     public static class OrderItemResponse {
-        private Long id;
-        private Long productId;
+        private String id;
+        private String productId;
         private String productName;
         private String productSku;
         private String productImage;
         private Integer quantity;
         private BigDecimal unitPrice;
         private BigDecimal totalPrice;
+        
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime createdAt;
         
         private ProductVariantInfo variant;
         
         @Data
         public static class ProductVariantInfo {
-            private Long id;
+            private String id;
             private String variantName;
             private String variantValue;
             private BigDecimal priceAdjustment;

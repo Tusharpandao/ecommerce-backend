@@ -11,18 +11,18 @@ public interface CacheService {
     
     // Product caching
     void cacheProduct(Product product);
-    Optional<Product> getCachedProduct(Long productId);
+    Optional<Product> getCachedProduct(String productId);
     void cacheProducts(List<Product> products);
     List<Product> getCachedProducts(String key);
-    void invalidateProductCache(Long productId);
+    void invalidateProductCache(String productId);
     void invalidateAllProductCache();
     
     // Category caching
     void cacheCategory(Category category);
-    Optional<Category> getCachedCategory(Long categoryId);
+    Optional<Category> getCachedCategory(String categoryId);
     void cacheCategories(List<Category> categories);
     List<Category> getCachedCategories(String key);
-    void invalidateCategoryCache(Long categoryId);
+    void invalidateCategoryCache(String categoryId);
     void invalidateAllCategoryCache();
     
     // User session caching

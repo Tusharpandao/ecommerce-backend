@@ -15,25 +15,25 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, String> {
     
-    List<Review> findByProductId(Long productId);
+    List<Review> findByProductId(String productId);
     
-    Page<Review> findByProductId(Long productId, Pageable pageable);
+    Page<Review> findByProductId(String productId, Pageable pageable);
     
-    List<Review> findByProductIdAndIsApprovedTrue(Long productId);
+    List<Review> findByProductIdAndIsApprovedTrue(String productId);
     
-    Page<Review> findByProductIdAndIsApprovedTrue(Long productId, Pageable pageable);
+    Page<Review> findByProductIdAndIsApprovedTrue(String productId, Pageable pageable);
     
     List<Review> findByUser(User user);
     
     Page<Review> findByUser(User user, Pageable pageable);
     
-    List<Review> findByUserId(Long userId);
+    List<Review> findByUserId(String userId);
     
-    Page<Review> findByUserId(Long userId, Pageable pageable);
+    Page<Review> findByUserId(String userId, Pageable pageable);
     
-    List<Review> findByProductIdAndUserId(Long productId, Long userId);
+    List<Review> findByProductIdAndUserId(String productId, String userId);
     
-    Optional<Review> findByProductIdAndUserIdAndIsApprovedTrue(Long productId, Long userId);
+    Optional<Review> findByProductIdAndUserIdAndIsApprovedTrue(String productId, String userId);
     
     List<Review> findByIsApproved(Boolean isApproved);
     
@@ -41,49 +41,49 @@ public interface ReviewRepository extends JpaRepository<Review, String> {
     
     List<Review> findByRating(Integer rating);
     
-    List<Review> findByProductIdAndRating(Long productId, Integer rating);
+    List<Review> findByProductIdAndRating(String productId, Integer rating);
     
     @Query("SELECT r FROM Review r WHERE r.product.id = :productId AND r.rating >= :minRating AND r.isApproved = true")
-    List<Review> findByProductIdAndMinRating(@Param("productId") Long productId, @Param("minRating") Integer minRating);
+    List<Review> findByProductIdAndMinRating(@Param("productId") String productId, @Param("minRating") Integer minRating);
     
     @Query("SELECT r FROM Review r WHERE r.product.id = :productId AND r.rating BETWEEN :minRating AND :maxRating AND r.isApproved = true")
-    List<Review> findByProductIdAndRatingRange(@Param("productId") Long productId, @Param("minRating") Integer minRating, @Param("maxRating") Integer maxRating);
+    List<Review> findByProductIdAndRatingRange(@Param("productId") String productId, @Param("minRating") Integer minRating, @Param("maxRating") Integer maxRating);
     
     @Query("SELECT r FROM Review r WHERE r.product.id = :productId AND r.isApproved = true ORDER BY r.createdAt DESC")
-    List<Review> findRecentApprovedReviewsByProduct(@Param("productId") Long productId);
+    List<Review> findRecentApprovedReviewsByProduct(@Param("productId") String productId);
     
     @Query("SELECT r FROM Review r WHERE r.product.id = :productId AND r.isApproved = true ORDER BY r.rating DESC, r.createdAt DESC")
-    List<Review> findTopRatedApprovedReviewsByProduct(@Param("productId") Long productId);
+    List<Review> findTopRatedApprovedReviewsByProduct(@Param("productId") String productId);
     
     @Query("SELECT r FROM Review r WHERE r.user.id = :userId AND r.isApproved = true ORDER BY r.createdAt DESC")
-    List<Review> findApprovedReviewsByUser(@Param("userId") Long userId);
+    List<Review> findApprovedReviewsByUser(@Param("userId") String userId);
     
     @Query("SELECT r FROM Review r WHERE r.isApproved = false ORDER BY r.createdAt ASC")
     Page<Review> findPendingReviews(Pageable pageable);
     
     @Query("SELECT r FROM Review r WHERE r.product.id = :productId AND r.isApproved = false ORDER BY r.createdAt ASC")
-    List<Review> findPendingReviewsByProduct(@Param("productId") Long productId);
+        List<Review> findPendingReviewsByProduct(@Param("productId") String productId);
     
     @Query("SELECT COUNT(r) FROM Review r WHERE r.product.id = :productId AND r.isApproved = true")
-    long countApprovedReviewsByProduct(@Param("productId") Long productId);
+    long countApprovedReviewsByProduct(@Param("productId") String productId);
     
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.product.id = :productId AND r.isApproved = true")
-    Double getAverageRatingByProduct(@Param("productId") Long productId);
+    Double getAverageRatingByProduct(@Param("productId") String productId);
     
     @Query("SELECT COUNT(r) FROM Review r WHERE r.product.id = :productId AND r.rating = :rating AND r.isApproved = true")
-    long countReviewsByProductAndRating(@Param("productId") Long productId, @Param("rating") Integer rating);
+    long countReviewsByProductAndRating(@Param("productId") String productId, @Param("rating") Integer rating);
     
     @Query("SELECT r FROM Review r WHERE r.title LIKE %:searchTerm% OR r.comment LIKE %:searchTerm%")
     Page<Review> searchReviews(@Param("searchTerm") String searchTerm, Pageable pageable);
     
     @Query("SELECT r FROM Review r WHERE r.product.id = :productId AND (r.title LIKE %:searchTerm% OR r.comment LIKE %:searchTerm%)")
-    Page<Review> searchReviewsByProduct(@Param("productId") Long productId, @Param("searchTerm") String searchTerm, Pageable pageable);
+    Page<Review> searchReviewsByProduct(@Param("productId") String productId, @Param("searchTerm") String searchTerm, Pageable pageable);
     
     @Query("SELECT r FROM Review r WHERE r.user.id = :userId AND (r.title LIKE %:searchTerm% OR r.comment LIKE %:searchTerm%)")
-    Page<Review> searchReviewsByUser(@Param("userId") Long userId, @Param("searchTerm") String searchTerm, Pageable pageable);
+    Page<Review> searchReviewsByUser(@Param("userId") String userId, @Param("searchTerm") String searchTerm, Pageable pageable);
     
-    boolean existsByProductIdAndUserId(Long productId, Long userId);
+    boolean existsByProductIdAndUserId(String productId, String userId);
     
     @Query("SELECT r FROM Review r WHERE r.product.id = :productId AND r.user.id = :userId AND r.id != :reviewId")
-    Optional<Review> findOtherReviewByProductAndUser(@Param("productId") Long productId, @Param("userId") Long userId, @Param("reviewId") Long reviewId);
+    Optional<Review> findOtherReviewByProductAndUser(@Param("productId") String productId, @Param("userId") String userId, @Param("reviewId") String reviewId);
 }

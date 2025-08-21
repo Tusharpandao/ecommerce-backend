@@ -1,5 +1,6 @@
 package in.ShopSphere.ecommerce.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import in.ShopSphere.ecommerce.model.entity.UserRole;
 import lombok.Data;
 
@@ -9,7 +10,7 @@ import java.util.List;
 @Data
 public class UserResponse {
     
-    private Long id;
+    private String id;
     private String email;
     private String firstName;
     private String lastName;
@@ -18,8 +19,14 @@ public class UserResponse {
     private String phoneNumber;
     private String profileImage;
     private Boolean emailVerified;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastLogin;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
     
     private List<AddressSummary> addresses;
@@ -29,7 +36,7 @@ public class UserResponse {
     
     @Data
     public static class AddressSummary {
-        private Long id;
+        private String id;
         private String addressType;
         private String streetAddress;
         private String city;

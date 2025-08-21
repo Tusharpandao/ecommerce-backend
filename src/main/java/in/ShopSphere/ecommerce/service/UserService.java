@@ -28,11 +28,11 @@ public interface UserService {
     
     AddressResponse addAddress(AddressRequest request);
     
-    AddressResponse updateAddress(Long id, AddressRequest request);
+    AddressResponse updateAddress(String id, AddressRequest request);
     
-    ApiResponse deleteAddress(Long id);
+    ApiResponse deleteAddress(String id);
     
-    AddressResponse setDefaultAddress(Long id);
+    AddressResponse setDefaultAddress(String id);
     
     // Admin operations
     PaginationResponse<UserResponse> getAllUsers(Pageable pageable);
@@ -41,15 +41,15 @@ public interface UserService {
     
     PaginationResponse<UserResponse> searchUsers(String searchTerm, Pageable pageable);
     
-    UserResponse getUserById(Long id);
+    UserResponse getUserById(String id);
     
-    ApiResponse blockUser(Long id);
+    ApiResponse blockUser(String id);
     
-    ApiResponse unblockUser(Long id);
+    ApiResponse unblockUser(String id);
     
-    ApiResponse updateUserRole(Long id, UserRole role);
+    ApiResponse updateUserRole(String id, UserRole role);
     
-    ApiResponse deleteUser(Long id);
+    ApiResponse deleteUser(String id);
     
     // Statistics
     Long getTotalUsers();

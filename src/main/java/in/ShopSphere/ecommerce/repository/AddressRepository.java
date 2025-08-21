@@ -11,43 +11,43 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface AddressRepository extends JpaRepository<Address, Long> {
+public interface AddressRepository extends JpaRepository<Address, String> {
     
     List<Address> findByUser(User user);
     
-    List<Address> findByUserId(Long userId);
+    List<Address> findByUserId(String userId);
     
     List<Address> findByUserAndIsDefaultTrue(User user);
     
-    Optional<Address> findByUserIdAndIsDefaultTrue(Long userId);
+    Optional<Address> findByUserIdAndIsDefaultTrue(String userId);
     
     List<Address> findByUserOrderByIsDefaultDescCreatedAtDesc(User user);
     
     @Query("SELECT a FROM Address a WHERE a.user.id = :userId ORDER BY a.isDefault DESC, a.createdAt DESC")
-    List<Address> findByUserIdOrdered(@Param("userId") Long userId);
+    List<Address> findByUserIdOrdered(@Param("userId") String userId);
     
     @Query("SELECT a FROM Address a WHERE a.user.id = :userId AND a.addressType = :addressType")
-    List<Address> findByUserIdAndAddressType(@Param("userId") Long userId, @Param("addressType") String addressType);
+    List<Address> findByUserIdAndAddressType(@Param("userId") String userId, @Param("addressType") String addressType);
     
     @Query("SELECT COUNT(a) FROM Address a WHERE a.user.id = :userId")
-    long countByUserId(@Param("userId") Long userId);
+    long countByUserId(@Param("userId") String userId);
     
     @Query("SELECT a FROM Address a WHERE a.user.id = :userId AND a.city = :city")
-    List<Address> findByUserIdAndCity(@Param("userId") Long userId, @Param("city") String city);
+    List<Address> findByUserIdAndCity(@Param("userId") String userId, @Param("city") String city);
     
     @Query("SELECT a FROM Address a WHERE a.user.id = :userId AND a.state = :state")
-    List<Address> findByUserIdAndState(@Param("userId") Long userId, @Param("state") String state);
+    List<Address> findByUserIdAndState(@Param("userId") String userId, @Param("state") String state);
     
     @Query("SELECT a FROM Address a WHERE a.user.id = :userId AND a.country = :country")
-    List<Address> findByUserIdAndCountry(@Param("userId") Long userId, @Param("country") String country);
+    List<Address> findByUserIdAndCountry(@Param("userId") String userId, @Param("country") String country);
     
     @Query("SELECT a FROM Address a WHERE a.user.id = :userId AND a.zipCode = :zipCode")
-    List<Address> findByUserIdAndZipCode(@Param("userId") Long userId, @Param("zipCode") String zipCode);
+    List<Address> findByUserIdAndZipCode(@Param("userId") String userId, @Param("zipCode") String zipCode);
     
-    boolean existsByUserIdAndIsDefaultTrue(Long userId);
+    boolean existsByUserIdAndIsDefaultTrue(String userId);
     
     @Query("SELECT a FROM Address a WHERE a.user.id = :userId AND a.id != :addressId AND a.isDefault = true")
-    List<Address> findOtherDefaultAddresses(@Param("userId") Long userId, @Param("addressId") Long addressId);
+    List<Address> findOtherDefaultAddresses(@Param("userId") String userId, @Param("addressId") String addressId);
     
     @Query("SELECT COUNT(a) FROM Address a WHERE a.user = :user")
     long countByUser(@Param("user") User user);

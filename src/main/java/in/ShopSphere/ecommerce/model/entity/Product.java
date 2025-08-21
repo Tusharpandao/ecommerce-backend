@@ -7,8 +7,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -17,6 +19,7 @@ import org.hibernate.type.SqlTypes;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "products", indexes = {
@@ -31,15 +34,17 @@ import java.util.List;
     @Index(name = "idx_products_discount_percentage", columnList = "discount_percentage"),
     @Index(name = "idx_products_availability_status", columnList = "availability_status")
 })
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"images", "variants", "reviews", "cartItems", "orderItems", "wishlistItems"})
 public class Product {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     
     @NotBlank(message = "Product name is required")
     @Size(max = 255, message = "Product name must not exceed 255 characters")
@@ -208,39 +213,43 @@ public class Product {
     }
     
     public void increaseStock(int quantity) {
-        this.stockQuantity += quantity;
-    }
-    
-    public void updateRating(BigDecimal newRating) {
-        if (this.rating.equals(BigDecimal.ZERO)) {
-            this.rating = newRating;
-        } else {
-            // Calculate weighted average
-            BigDecimal totalRating = this.rating.multiply(new BigDecimal(reviewCount));
-            totalRating = totalRating.add(newRating);
-            this.rating = totalRating.divide(new BigDecimal(reviewCount + 1), 2, BigDecimal.ROUND_HALF_UP);
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Quantity must be positive");
         }
-        this.reviewCount++;
+        this.stockQuantity += quantity;
     }
     
     public String getPrimaryImageUrl() {
         if (images != null && !images.isEmpty()) {
-            return images.stream()
-                    .filter(ProductImage::getIsPrimary)
-                    .findFirst()
-                    .map(ProductImage::getImageUrl)
-                    .orElse(images.get(0).getImageUrl());
+            // First try to find a primary image
+            for (ProductImage image : images) {
+                if (image.getIsPrimary() != null && image.getIsPrimary()) {
+                    return image.getImageUrl();
+                }
+            }
+            // If no primary image found, return the first image
+            return images.get(0).getImageUrl();
         }
-        return null;
+        return thumbnail; // Fallback to thumbnail if no images
     }
     
-    public List<String> getAllImageUrls() {
-        if (images != null && !images.isEmpty()) {
-            return images.stream()
-                    .sorted((i1, i2) -> Integer.compare(i1.getSortOrder(), i2.getSortOrder()))
-                    .map(ProductImage::getImageUrl)
-                    .toList();
-        }
-        return List.of();
+    // Custom hashCode and equals methods to prevent infinite recursion
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            id, name, sku, barcode, price, salePrice, costPrice,
+            stockQuantity, rating, reviewCount, isActive, isFeatured,
+            createdAt, updatedAt
+        );
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Product product = (Product) obj;
+        return Objects.equals(id, product.id) &&
+               Objects.equals(sku, product.sku) &&
+               Objects.equals(barcode, product.barcode);
     }
 }

@@ -30,7 +30,7 @@ public class DataImportServiceImpl implements DataImportService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
-    private final ReviewRepository reviewRepository;
+  
     private final ObjectMapper objectMapper;
 
     @Override
@@ -68,7 +68,7 @@ public class DataImportServiceImpl implements DataImportService {
         
         for (ExternalProductDto externalProduct : externalProducts) {
             try {
-                Long productId = importSingleProduct(externalProduct);
+                String productId = importSingleProduct(externalProduct);
                 if (productId != null) {
                     importedCount++;
                     log.info("Successfully imported product: {} (ID: {})", 
@@ -86,7 +86,7 @@ public class DataImportServiceImpl implements DataImportService {
 
     @Override
     @Transactional
-    public Long importSingleProduct(ExternalProductDto externalProduct) {
+    public String importSingleProduct(ExternalProductDto externalProduct) {
         // Get or create category
         Category category = getOrCreateCategory(externalProduct.getCategory());
         

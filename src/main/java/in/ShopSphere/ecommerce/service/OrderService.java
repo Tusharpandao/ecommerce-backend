@@ -16,7 +16,7 @@ public interface OrderService {
     
     OrderResponse createOrder(OrderRequest request);
     
-    OrderResponse getOrderById(Long id);
+    OrderResponse getOrderById(String id);
     
     OrderResponse getOrderByNumber(String orderNumber);
     
@@ -34,20 +34,20 @@ public interface OrderService {
     
     List<OrderResponse> getOrdersByActualDelivery(LocalDate date);
     
-    ApiResponse updateOrderStatus(Long id, OrderStatus status);
+    ApiResponse updateOrderStatus(String id, OrderStatus status);
     
-    ApiResponse updatePaymentStatus(Long id, PaymentStatus paymentStatus);
+    ApiResponse updatePaymentStatus(String id, PaymentStatus paymentStatus);
     
-    ApiResponse updateDeliveryDate(Long id, LocalDate deliveryDate);
+    ApiResponse updateDeliveryDate(String id, LocalDate deliveryDate);
     
-    ApiResponse cancelOrder(Long id);
+    ApiResponse cancelOrder(String id);
     
-    ApiResponse refundOrder(Long id);
+    ApiResponse refundOrder(String id);
     
-    ApiResponse addOrderNotes(Long id, String notes);
-     ApiResponse addOrderNote(Long id, String notes);
+    ApiResponse addOrderNotes(String id, String notes);
+     ApiResponse addOrderNote(String id, String notes);
     
-    OrderResponse getOrderDetails(Long id);
+    OrderResponse getOrderDetails(String id);
     
     PaginationResponse<OrderResponse> searchOrders(String searchTerm, Pageable pageable);
     

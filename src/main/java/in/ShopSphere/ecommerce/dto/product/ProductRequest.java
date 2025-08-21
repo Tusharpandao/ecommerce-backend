@@ -38,7 +38,7 @@ public class ProductRequest {
     private String barcode;
     
     @NotNull(message = "Category ID is required")
-    private Long categoryId;
+    private String categoryId;
     
     @NotNull(message = "Stock quantity is required")
     @Min(value = 0, message = "Stock quantity cannot be negative")

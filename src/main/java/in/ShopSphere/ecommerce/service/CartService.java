@@ -10,9 +10,9 @@ public interface CartService {
     
     CartResponse addToCart(CartRequest request);
     
-    CartResponse updateCartItem(Long itemId, Integer quantity);
+    CartResponse updateCartItem(String itemId, Integer quantity);
     
-    CartResponse removeFromCart(Long itemId);
+    CartResponse removeFromCart(String itemId);
     
     CartResponse clearCart();
     
@@ -22,9 +22,9 @@ public interface CartService {
     
     CartResponse getCartSummary();
     
-    ApiResponse moveToWishlist(Long itemId);
+    ApiResponse moveToWishlist(String itemId);
     
-    ApiResponse updateItemQuantity(Long itemId, Integer quantity);
+    ApiResponse updateItemQuantity(String itemId, Integer quantity);
     
     ApiResponse checkCartAvailability();
 }

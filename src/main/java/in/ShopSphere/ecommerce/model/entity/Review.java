@@ -7,12 +7,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "reviews", indexes = {
@@ -20,10 +23,12 @@ import java.time.LocalDateTime;
     @Index(name = "idx_reviews_user_id", columnList = "user_id"),
     @Index(name = "idx_reviews_is_approved", columnList = "is_approved")
 })
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"product", "user"})
 public class Review {
     
     @Id
@@ -117,5 +122,21 @@ public class Review {
     
     public boolean hasTitle() {
         return title != null && !title.trim().isEmpty();
+    }
+    
+    // Custom hashCode and equals methods to prevent infinite recursion
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            id, rating, title, comment, isApproved, createdAt, updatedAt
+        );
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Review review = (Review) obj;
+        return Objects.equals(id, review.id);
     }
 }

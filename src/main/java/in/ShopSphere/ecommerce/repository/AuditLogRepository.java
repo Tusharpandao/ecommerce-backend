@@ -17,9 +17,9 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, String> {
     
     List<AuditLog> findByUser(User user);
     
-    List<AuditLog> findByUserId(Long userId);
+    List<AuditLog> findByUserId(String userId);
     
-    Page<AuditLog> findByUserId(Long userId, Pageable pageable);
+    Page<AuditLog> findByUserId(String userId, Pageable pageable);
     
     List<AuditLog> findByAction(String action);
     
@@ -29,18 +29,18 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, String> {
     
     Page<AuditLog> findByEntityType(String entityType, Pageable pageable);
     
-    List<AuditLog> findByEntityId(Long entityId);
+    List<AuditLog> findByEntityId(String entityId); 
     
-    List<AuditLog> findByEntityTypeAndEntityId(String entityType, Long entityId);
+    List<AuditLog> findByEntityTypeAndEntityId(String entityType, String entityId);
     
     @Query("SELECT a FROM AuditLog a WHERE a.user.id = :userId AND a.action = :action")
-    List<AuditLog> findByUserIdAndAction(@Param("userId") Long userId, @Param("action") String action);
+    List<AuditLog> findByUserIdAndAction(@Param("userId") String userId, @Param("action") String action);
     
     @Query("SELECT a FROM AuditLog a WHERE a.user.id = :userId AND a.entityType = :entityType")
-    List<AuditLog> findByUserIdAndEntityType(@Param("userId") Long userId, @Param("entityType") String entityType);
+    List<AuditLog> findByUserIdAndEntityType(@Param("userId") String userId, @Param("entityType") String entityType);
     
     @Query("SELECT a FROM AuditLog a WHERE a.user.id = :userId AND a.entityId = :entityId")
-    List<AuditLog> findByUserIdAndEntityId(@Param("userId") Long userId, @Param("entityId") Long entityId);
+    List<AuditLog> findByUserIdAndEntityId(@Param("userId") String userId, @Param("entityId") String entityId);
     
     @Query("SELECT a FROM AuditLog a WHERE a.createdAt BETWEEN :startDate AND :endDate")
     List<AuditLog> findByDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
@@ -58,10 +58,10 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, String> {
     List<AuditLog> findByEntityTypeAndCreatedAfter(@Param("entityType") String entityType, @Param("startDate") LocalDateTime startDate);
     
     @Query("SELECT a FROM AuditLog a WHERE a.user.id = :userId AND a.createdAt >= :startDate")
-    List<AuditLog> findByUserIdAndCreatedAfter(@Param("userId") Long userId, @Param("startDate") LocalDateTime startDate);
+    List<AuditLog> findByUserIdAndCreatedAfter(@Param("userId") String userId, @Param("startDate") LocalDateTime startDate);
     
     @Query("SELECT a FROM AuditLog a WHERE a.user.id = :userId AND a.createdAt BETWEEN :startDate AND :endDate")
-    List<AuditLog> findByUserIdAndDateRange(@Param("userId") Long userId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    List<AuditLog> findByUserIdAndDateRange(@Param("userId") String userId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
     
     @Query("SELECT a FROM AuditLog a WHERE a.ipAddress = :ipAddress")
     List<AuditLog> findByIpAddress(@Param("ipAddress") String ipAddress);
@@ -73,10 +73,10 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, String> {
     List<AuditLog> findByUserAgentContaining(@Param("userAgent") String userAgent);
     
     @Query("SELECT a FROM AuditLog a WHERE a.user.id = :userId ORDER BY a.createdAt DESC")
-    Page<AuditLog> findRecentByUserId(@Param("userId") Long userId, Pageable pageable);
+    Page<AuditLog> findRecentByUserId(@Param("userId") String userId, Pageable pageable);
     
     @Query("SELECT a FROM AuditLog a WHERE a.entityType = :entityType AND a.entityId = :entityId ORDER BY a.createdAt DESC")
-    List<AuditLog> findEntityHistory(@Param("entityType") String entityType, @Param("entityId") Long entityId);
+    List<AuditLog> findEntityHistory(@Param("entityType") String entityType, @Param("entityId") String entityId);
     
     @Query("SELECT a FROM AuditLog a WHERE a.action IN :actions")
     Page<AuditLog> findByActions(@Param("actions") List<String> actions, Pageable pageable);
@@ -85,17 +85,17 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, String> {
     Page<AuditLog> findByEntityTypes(@Param("entityTypes") List<String> entityTypes, Pageable pageable);
     
     @Query("SELECT a FROM AuditLog a WHERE a.user.id = :userId AND a.action IN :actions")
-    List<AuditLog> findByUserIdAndActions(@Param("userId") Long userId, @Param("actions") List<String> actions);
+    List<AuditLog> findByUserIdAndActions(@Param("userId") String userId, @Param("actions") List<String> actions);
     
     @Query("SELECT a FROM AuditLog a WHERE a.user.id = :userId AND a.entityType IN :entityTypes")
-    List<AuditLog> findByUserIdAndEntityTypes(@Param("userId") Long userId, @Param("entityTypes") List<String> entityTypes);
+    List<AuditLog> findByUserIdAndEntityTypes(@Param("userId") String userId, @Param("entityTypes") List<String> entityTypes);
     
     @Query("SELECT COUNT(a) FROM AuditLog a WHERE a.user.id = :userId AND a.action = :action AND a.createdAt >= :startDate")
-    long countByUserIdAndActionAndDateRange(@Param("userId") Long userId, @Param("action") String action, @Param("startDate") LocalDateTime startDate);
+    long countByUserIdAndActionAndDateRange(@Param("userId") String userId, @Param("action") String action, @Param("startDate") LocalDateTime startDate);
     
     @Query("SELECT COUNT(a) FROM AuditLog a WHERE a.entityType = :entityType AND a.entityId = :entityId")
-    long countByEntity(@Param("entityType") String entityType, @Param("entityId") Long entityId);
+    long countByEntity(@Param("entityType") String entityType, @Param("entityId") String entityId);
     
     @Query("SELECT a FROM AuditLog a WHERE a.user.id = :userId AND a.createdAt >= :startDate ORDER BY a.createdAt DESC")
-    Page<AuditLog> findRecentActivityByUser(@Param("userId") Long userId, @Param("startDate") LocalDateTime startDate, Pageable pageable);
+    Page<AuditLog> findRecentActivityByUser(@Param("userId") String userId, @Param("startDate") LocalDateTime startDate, Pageable pageable);
 }

@@ -25,5 +25,5 @@ public interface DataImportService {
      * @param externalProduct External product data
      * @return Imported product ID
      */
-    Long importSingleProduct(ExternalProductDto externalProduct);
+    String importSingleProduct(ExternalProductDto externalProduct);
 }

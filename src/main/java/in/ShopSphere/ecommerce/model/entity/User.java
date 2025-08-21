@@ -7,8 +7,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users", indexes = {
@@ -26,15 +29,17 @@ import java.util.List;
     @Index(name = "idx_users_role", columnList = "role"),
     @Index(name = "idx_users_is_blocked", columnList = "is_blocked")
 })
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"products", "cart", "orders", "addresses", "reviews", "wishlist"})
 public class User implements UserDetails {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is required")
@@ -94,6 +99,22 @@ public class User implements UserDetails {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+    
+    // JPA lifecycle callbacks
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now();
+        }
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
     
     // Relationships
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -173,5 +194,22 @@ public class User implements UserDetails {
             }
         }
         return false;
+    }
+    
+    // Custom hashCode and equals methods to prevent infinite recursion
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            id, email, firstName, lastName, role, isBlocked, phoneNumber,
+            profileImage, emailVerified, createdAt, updatedAt
+        );
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return Objects.equals(id, user.id) && Objects.equals(email, user.email);
     }
 }

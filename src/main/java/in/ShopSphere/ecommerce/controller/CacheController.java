@@ -79,7 +79,7 @@ public class CacheController {
     @DeleteMapping("/invalidate/product/{productId}")
     @PreAuthorize("hasAnyRole('SELLER', 'ADMIN')")
     @Operation(summary = "Invalidate product cache", description = "Invalidate cache for a specific product")
-    public ResponseEntity<ApiResponse> invalidateProductCache(@PathVariable Long productId) {
+    public ResponseEntity<ApiResponse> invalidateProductCache(@PathVariable String productId) {
         try {
             cacheService.invalidateProductCache(productId);
             log.info("Product cache invalidated successfully: {}", productId);
@@ -94,7 +94,7 @@ public class CacheController {
     @DeleteMapping("/invalidate/category/{categoryId}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Invalidate category cache", description = "Invalidate cache for a specific category")
-    public ResponseEntity<ApiResponse> invalidateCategoryCache(@PathVariable Long categoryId) {
+    public ResponseEntity<ApiResponse> invalidateCategoryCache(@PathVariable String categoryId) {
         try {
             cacheService.invalidateCategoryCache(categoryId);
             log.info("Category cache invalidated successfully: {}", categoryId);
@@ -109,7 +109,7 @@ public class CacheController {
     @DeleteMapping("/invalidate/user/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Invalidate user cache", description = "Invalidate cache for a specific user")
-    public ResponseEntity<ApiResponse> invalidateUserCache(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse> invalidateUserCache(@PathVariable String userId) {
         try {
             cacheService.invalidate("user:" + userId);
             log.info("User cache invalidated successfully: {}", userId);
@@ -124,7 +124,7 @@ public class CacheController {
     @DeleteMapping("/invalidate/cart/{userId}")
     @PreAuthorize("hasAnyRole('CUSTOMER', 'SELLER', 'ADMIN')")
     @Operation(summary = "Invalidate cart cache", description = "Invalidate cache for a specific user's cart")
-    public ResponseEntity<ApiResponse> invalidateCartCache(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse> invalidateCartCache(@PathVariable String userId) {
         try {
             cacheService.invalidate("cart:" + userId);
             log.info("Cart cache invalidated successfully for user: {}", userId);

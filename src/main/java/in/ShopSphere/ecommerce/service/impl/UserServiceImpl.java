@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AddressResponse updateAddress(Long addressId, AddressRequest request) {
+        public AddressResponse updateAddress(String addressId, AddressRequest request) {
         log.info("Updating address: addressId={}", addressId);
         
         User currentUser = getCurrentAuthenticatedUser();   
@@ -209,7 +209,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse deleteAddress(Long addressId) {
+    public ApiResponse deleteAddress(String addressId) {
         log.info("Deleting address: addressId={}", addressId);
         
         User currentUser = getCurrentAuthenticatedUser();
@@ -234,7 +234,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AddressResponse setDefaultAddress(Long addressId) {
+    public AddressResponse setDefaultAddress(String addressId) {
         log.info("Setting default address: addressId={}", addressId);
         
         User currentUser = getCurrentAuthenticatedUser();
@@ -338,7 +338,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Cacheable(value = "users", key = "#id")
-    public UserResponse getUserById(Long id) {
+    public UserResponse getUserById(String id) {
         // Only admins can view other users
         User currentUser = getCurrentAuthenticatedUser();
         if (!currentUser.getRole().name().equals("ADMIN") && !currentUser.getId().equals(id)) {
@@ -352,7 +352,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse blockUser(Long id) {
+    public ApiResponse blockUser(String id) {
         log.info("Blocking user: userId={}", id);
         
         // Only admins can block users
@@ -378,7 +378,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse unblockUser(Long id) {
+    public ApiResponse unblockUser(String id) {
         log.info("Unblocking user: userId={}", id);
         
         // Only admins can unblock users
@@ -400,7 +400,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse updateUserRole(Long id, UserRole newRole) {
+    public ApiResponse updateUserRole(String id, UserRole newRole) {
         log.info("Updating user role: userId={}, newRole={}", id, newRole);
         
         // Only admins can update user roles
@@ -426,7 +426,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse deleteUser(Long id) {
+    public ApiResponse deleteUser(String id) {
         log.info("Deleting user: userId={}", id);
         
         // Only admins can delete users

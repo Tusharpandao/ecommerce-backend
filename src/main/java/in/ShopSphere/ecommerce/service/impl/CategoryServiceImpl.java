@@ -62,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @CacheEvict(value = {"categories", "category"}, allEntries = true)
-    public CategoryResponse updateCategory(Long id, CategoryRequest request) {
+    public CategoryResponse updateCategory(String id, CategoryRequest request) {
         log.info("Updating category with ID: {}", id);
         
         Category category = categoryRepository.findById(id)
@@ -97,7 +97,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Cacheable(value = "category", key = "#id")
-    public CategoryResponse getCategoryById(Long id) {
+    public CategoryResponse getCategoryById(String id) {
         Category category = categoryRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
         
@@ -147,7 +147,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Cacheable(value = "categories")
-    public List<CategoryResponse> getSubCategories(Long parentId) {
+    public List<CategoryResponse> getSubCategories(String parentId) {
         List<Category> categories = categoryRepository.findSubCategories(parentId);
         return categoryMapper.toCategoryResponseList(categories);
     }
@@ -185,7 +185,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @CacheEvict(value = {"categories", "category"}, allEntries = true)
-    public ApiResponse deleteCategory(Long id) {
+    public ApiResponse deleteCategory(String id) {
         log.info("Deleting category with ID: {}", id);
         
         Category category = categoryRepository.findById(id)
@@ -210,7 +210,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @CacheEvict(value = {"categories", "category"}, allEntries = true)
-    public ApiResponse toggleCategoryStatus(Long id) {
+    public ApiResponse toggleCategoryStatus(String id) {
         log.info("Toggling category status with ID: {}", id);
         
         Category category = categoryRepository.findById(id)
@@ -228,7 +228,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @CacheEvict(value = {"categories", "category"}, allEntries = true)
-    public ApiResponse updateCategoryOrder(Long id, Integer sortOrder) {
+    public ApiResponse updateCategoryOrder(String id, Integer sortOrder) {
         log.info("Updating category order for ID: {} to: {}", id, sortOrder);
         
         Category category = categoryRepository.findById(id)
@@ -245,7 +245,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @CacheEvict(value = {"categories", "category"}, allEntries = true)
-    public ApiResponse moveCategory(Long id, Long newParentId) {
+    public ApiResponse moveCategory(String id, String newParentId) {
         log.info("Moving category with ID: {} to parent ID: {}", id, newParentId);
         
         Category category = categoryRepository.findById(id)

@@ -13,9 +13,9 @@ public interface ProductService {
     
     ProductResponse createProduct(ProductRequest request);
     
-    ProductResponse updateProduct(Long id, ProductRequest request);
+    ProductResponse updateProduct(String id, ProductRequest request);
     
-    ProductResponse getProductById(Long id);
+    ProductResponse getProductById(String id);
     
     ProductResponse getProductBySku(String sku);
     
@@ -23,9 +23,9 @@ public interface ProductService {
     
     PaginationResponse<ProductResponse> searchProducts(String searchTerm, Pageable pageable);
     
-    PaginationResponse<ProductResponse> getProductsByCategory(Long categoryId, Pageable pageable);
+    PaginationResponse<ProductResponse> getProductsByCategory(String categoryId, Pageable pageable);
     
-    PaginationResponse<ProductResponse> getProductsBySeller(Long sellerId, Pageable pageable);
+    PaginationResponse<ProductResponse> getProductsBySeller(String sellerId, Pageable pageable);
     
     List<ProductResponse> getFeaturedProducts();
     
@@ -43,13 +43,13 @@ public interface ProductService {
     
     PaginationResponse<ProductResponse> getProductsByRating(Double minRating, Pageable pageable);
     
-    ApiResponse deleteProduct(Long id);
+    ApiResponse deleteProduct(String id);
     
-    ApiResponse toggleProductStatus(Long id);
+    ApiResponse toggleProductStatus(String id);
     
-    ApiResponse toggleFeaturedStatus(Long id);
+    ApiResponse toggleFeaturedStatus(String id);
     
-    ApiResponse updateStock(Long id, Integer quantity);
+    ApiResponse updateStock(String id, Integer quantity);
     
-    ApiResponse updatePrice(Long id, BigDecimal price, BigDecimal salePrice);
+    ApiResponse updatePrice(String id, BigDecimal price, BigDecimal salePrice);
 }

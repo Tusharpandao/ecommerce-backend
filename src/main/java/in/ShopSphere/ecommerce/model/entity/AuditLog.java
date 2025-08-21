@@ -48,7 +48,7 @@ public class AuditLog {
     private String entityType; // User, Product, Order, etc.
     
     @Column(name = "entity_id")
-    private Long entityId;
+    private String entityId;
     
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "old_values", columnDefinition = "jsonb")

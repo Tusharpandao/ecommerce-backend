@@ -5,28 +5,33 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "categories", indexes = {
     @Index(name = "idx_categories_parent_id", columnList = "parent_id"),
     @Index(name = "idx_categories_is_active", columnList = "is_active")
 })
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"parent", "children", "products"})
 public class Category {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     
     @NotBlank(message = "Category name is required")
     @Size(max = 100, message = "Category name must not exceed 100 characters")
@@ -84,5 +89,21 @@ public class Category {
             return 0;
         }
         return parent.getLevel() + 1;
+    }
+    
+    // Custom hashCode and equals methods to prevent infinite recursion
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            id, name, description, image, isActive, sortOrder, createdAt, updatedAt
+        );
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Category category = (Category) obj;
+        return Objects.equals(id, category.id) && Objects.equals(name, category.name);
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, String> {
     
     Optional<Category> findByName(String name);
     
@@ -22,13 +22,13 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     
     List<Category> findByParentIsNullAndIsActiveTrue();
     
-    List<Category> findByParentIdAndIsActiveTrue(Long parentId);
+    List<Category> findByParentIdAndIsActiveTrue(String parentId);
     
     @Query("SELECT c FROM Category c WHERE c.parent IS NULL AND c.isActive = true ORDER BY c.sortOrder ASC")
     List<Category> findRootCategories();
     
     @Query("SELECT c FROM Category c WHERE c.parent.id = :parentId AND c.isActive = true ORDER BY c.sortOrder ASC")
-    List<Category> findSubCategories(@Param("parentId") Long parentId);
+    List<Category> findSubCategories(@Param("parentId") String parentId);
     
     @Query("SELECT c FROM Category c WHERE c.isActive = true AND (c.name LIKE %:searchTerm% OR c.description LIKE %:searchTerm%)")
     Page<Category> searchCategories(@Param("searchTerm") String searchTerm, Pageable pageable);
@@ -37,12 +37,12 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Page<Category> findAllActive(Pageable pageable);
     
     @Query("SELECT COUNT(c) FROM Category c WHERE c.parent.id = :parentId")
-    long countSubCategories(@Param("parentId") Long parentId);
+    long countSubCategories(@Param("parentId") String parentId);
     
     @Query("SELECT c FROM Category c WHERE c.isActive = true AND c.id IN (SELECT DISTINCT p.category.id FROM Product p WHERE p.isActive = true)")
     List<Category> findCategoriesWithActiveProducts();
     
-    boolean existsByNameAndParentId(String name, Long parentId);
+    boolean existsByNameAndParentId(String name, String parentId);
     
-    boolean existsByNameAndParentIdAndIdNot(String name, Long parentId, Long id);
+    boolean existsByNameAndParentIdAndIdNot(String name, String parentId, String id);
 }

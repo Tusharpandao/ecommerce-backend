@@ -104,7 +104,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @CacheEvict(value = "cart", allEntries = true)
-    public CartResponse updateCartItem(Long itemId, Integer quantity) {
+    public CartResponse updateCartItem(String itemId, Integer quantity) {
         log.info("Updating cart item: itemId={}, quantity={}", itemId, quantity);
         
         User currentUser = getCurrentUser();
@@ -137,7 +137,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @CacheEvict(value = "cart", allEntries = true)
-    public CartResponse removeFromCart(Long itemId) {
+    public CartResponse removeFromCart(String itemId) {
         log.info("Removing item from cart: itemId={}", itemId);
         
         User currentUser = getCurrentUser();
@@ -207,7 +207,7 @@ public class CartServiceImpl implements CartService {
     @SuppressWarnings("rawtypes")
     @Override
     @CacheEvict(value = "cart", allEntries = true)
-    public ApiResponse moveToWishlist(Long productId) {
+    public ApiResponse moveToWishlist(String productId) {
         log.info("Moving product to wishlist: productId={}", productId);
         
         User currentUser = getCurrentUser();
@@ -245,7 +245,7 @@ public class CartServiceImpl implements CartService {
     @SuppressWarnings("rawtypes")
     @Override
     @CacheEvict(value = "cart", allEntries = true)
-    public ApiResponse updateItemQuantity(Long itemId, Integer quantity) {
+        public ApiResponse updateItemQuantity(String itemId, Integer quantity) {
         log.info("Updating item quantity: itemId={}, quantity={}", itemId, quantity);
         
         User currentUser = getCurrentUser();

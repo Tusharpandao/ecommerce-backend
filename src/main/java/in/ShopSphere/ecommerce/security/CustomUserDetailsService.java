@@ -53,7 +53,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public UserDetails loadUserById(Long id) {
+    public UserDetails loadUserById(String id) {
         log.debug("Loading user by ID: {}", id);
         
         User user = userRepository.findById(id)

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, String> {
     
     Optional<Product> findBySku(String sku);
     
@@ -28,9 +28,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     Page<Product> findBySellerAndIsActiveTrue(User seller, Pageable pageable);
     
-    List<Product> findByCategoryIdAndIsActiveTrue(Long categoryId);
+    List<Product> findByCategoryIdAndIsActiveTrue(String categoryId);
     
-    Page<Product> findByCategoryIdAndIsActiveTrue(Long categoryId, Pageable pageable);
+    Page<Product> findByCategoryIdAndIsActiveTrue(String categoryId, Pageable pageable);
     
     List<Product> findByIsActiveTrue();
     
@@ -56,7 +56,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> searchProducts(@Param("searchTerm") String searchTerm, Pageable pageable);
     
     @Query("SELECT p FROM Product p WHERE p.isActive = true AND p.category.id = :categoryId AND (p.name LIKE %:searchTerm% OR p.description LIKE %:searchTerm%)")
-    Page<Product> searchProductsInCategory(@Param("categoryId") Long categoryId, @Param("searchTerm") String searchTerm, Pageable pageable);
+    Page<Product> searchProductsInCategory(@Param("categoryId") String categoryId, @Param("searchTerm") String searchTerm, Pageable pageable);
     
     @Query("SELECT p FROM Product p WHERE p.isActive = true ORDER BY p.rating DESC, p.reviewCount DESC")
     Page<Product> findTopRatedProducts(Pageable pageable);
@@ -68,22 +68,22 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findDiscountedProducts(Pageable pageable);
     
     @Query("SELECT p FROM Product p WHERE p.isActive = true AND p.category.id IN :categoryIds")
-    Page<Product> findByCategoryIds(@Param("categoryIds") List<Long> categoryIds, Pageable pageable);
+    Page<Product> findByCategoryIds(@Param("categoryIds") List<String> categoryIds, Pageable pageable);
     
     @Query("SELECT p FROM Product p WHERE p.isActive = true AND p.seller.id = :sellerId AND p.category.id = :categoryId")
-    Page<Product> findBySellerAndCategory(@Param("sellerId") Long sellerId, @Param("categoryId") Long categoryId, Pageable pageable);
+    Page<Product> findBySellerAndCategory(@Param("sellerId") String sellerId, @Param("categoryId") String categoryId, Pageable pageable);
     
     @Query("SELECT COUNT(p) FROM Product p WHERE p.seller.id = :sellerId AND p.isActive = true")
-    long countActiveProductsBySeller(@Param("sellerId") Long sellerId);
+    long countActiveProductsBySeller(@Param("sellerId") String sellerId);
     
     @Query("SELECT p FROM Product p WHERE p.isActive = true AND p.stockQuantity > 0 ORDER BY p.stockQuantity ASC")
     List<Product> findProductsByStockAscending();
     
     boolean existsBySku(String sku);
     
-    boolean existsBySkuAndIdNot(String sku, Long id);
+    boolean existsBySkuAndIdNot(String sku, String id);
     
     boolean existsByBarcode(String barcode);
     
-    boolean existsByBarcodeAndIdNot(String barcode, Long id);
+    boolean existsByBarcodeAndIdNot(String barcode, String id);
 }

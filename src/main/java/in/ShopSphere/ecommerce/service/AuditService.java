@@ -74,7 +74,7 @@ public interface AuditService {
      * @param size page size
      * @return paginated audit logs
      */
-    List<AuditLog> getUserAuditLogs(Long userId, LocalDateTime startDate, LocalDateTime endDate, 
+    List<AuditLog> getUserAuditLogs(String userId, LocalDateTime startDate, LocalDateTime endDate, 
                                    int page, int size);
     
     /**

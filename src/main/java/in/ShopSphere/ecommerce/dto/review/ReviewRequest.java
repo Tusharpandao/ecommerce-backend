@@ -6,8 +6,7 @@ import lombok.Data;
 @Data
 public class ReviewRequest {
     
-    @NotNull(message = "Product ID is required")
-    private Long productId;
+    private String productId;
     
     @NotNull(message = "Rating is required")
     @Min(value = 1, message = "Rating must be at least 1")

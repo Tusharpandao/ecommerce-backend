@@ -12,29 +12,30 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CartRepository extends JpaRepository<Cart, Long> {
+public interface CartRepository extends JpaRepository<Cart, String> {
     
     Optional<Cart> findByUser(User user);
     
-    Optional<Cart> findByUserId(Long userId);
+    Optional<Cart> findByUserId(String userId);
     
     @Query("SELECT c FROM Cart c WHERE c.user.id = :userId")
-    Optional<Cart> findByUserIdWithItems(@Param("userId") Long userId);
+    Optional<Cart> findByUserIdWithItems(@Param("userId") String userId);
     
     @Query("SELECT c FROM Cart c LEFT JOIN FETCH c.items ci LEFT JOIN FETCH ci.product WHERE c.user.id = :userId")
-    Optional<Cart> findByUserIdWithItemsAndProducts(@Param("userId") Long userId);
+    Optional<Cart> findByUserIdWithItemsAndProducts(@Param("userId") String userId);
     
-    boolean existsByUserId(Long userId);
+    boolean existsByUserId(String userId);
     
     @Query("SELECT c FROM Cart c WHERE c.updatedAt < :date")
     List<Cart> findAbandonedCarts(@Param("date") LocalDateTime date);
     
     @Query("SELECT COUNT(c) FROM Cart c WHERE c.user.id = :userId")
-    long countByUserId(@Param("userId") Long userId);
+    long countByUserId(@Param("userId") String userId);
     
     @Query("SELECT c FROM Cart c WHERE c.user.id = :userId AND c.items IS NOT EMPTY")
-    Optional<Cart> findNonEmptyCartByUserId(@Param("userId") Long userId);
+    Optional<Cart> findNonEmptyCartByUserId(@Param("userId") String userId);
     
     @Query("SELECT c FROM Cart c WHERE c.user.id = :userId AND SIZE(c.items) > 0")
-    Optional<Cart> findCartWithItemsByUserId(@Param("userId") Long userId);
+    Optional<Cart> findCartWithItemsByUserId(@Param("userId") String userId);
 }
+    

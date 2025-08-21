@@ -45,7 +45,7 @@ public class CartController {
     @PutMapping("/items/{itemId}")
     @Operation(summary = "Update cart item", description = "Updates the quantity of an item in the cart.")
     public ResponseEntity<CartResponse> updateCartItem(
-            @Parameter(description = "Cart item ID") @PathVariable Long itemId,
+            @Parameter(description = "Cart item ID") @PathVariable String itemId,
             @Parameter(description = "New quantity") @RequestParam Integer quantity) {
         log.info("Updating cart item: itemId={}, quantity={}", itemId, quantity);
         CartResponse response = cartService.updateCartItem(itemId, quantity);
@@ -55,7 +55,7 @@ public class CartController {
     @DeleteMapping("/items/{itemId}")
     @Operation(summary = "Remove item from cart", description = "Removes an item from the shopping cart.")
     public ResponseEntity<CartResponse> removeFromCart(
-            @Parameter(description = "Cart item ID") @PathVariable Long itemId) {
+            @Parameter(description = "Cart item ID") @PathVariable String itemId) {
         log.info("Removing item from cart: itemId={}", itemId);
         CartResponse response = cartService.removeFromCart(itemId);
         return ResponseEntity.ok(response);
@@ -97,7 +97,7 @@ public class CartController {
     @PostMapping("/items/{itemId}/move-to-wishlist")
     @Operation(summary = "Move item to wishlist", description = "Moves an item from cart to wishlist.")
     public ResponseEntity<ApiResponse> moveToWishlist(
-            @Parameter(description = "Cart item ID") @PathVariable Long itemId) {
+            @Parameter(description = "Cart item ID") @PathVariable String itemId) {
         log.info("Moving item to wishlist: itemId={}", itemId);
         ApiResponse response = cartService.moveToWishlist(itemId);
         return ResponseEntity.ok(response);
@@ -114,7 +114,7 @@ public class CartController {
     @PatchMapping("/items/{itemId}/quantity")
     @Operation(summary = "Update item quantity", description = "Updates the quantity of a specific item in the cart.")
     public ResponseEntity<ApiResponse> updateItemQuantity(
-            @Parameter(description = "Cart item ID") @PathVariable Long itemId,
+            @Parameter(description = "Cart item ID") @PathVariable String itemId,
             @Parameter(description = "New quantity") @RequestParam Integer quantity) {
         log.info("Updating item quantity: itemId={}, quantity={}", itemId, quantity);
         ApiResponse response = cartService.updateItemQuantity(itemId, quantity);

@@ -9,10 +9,10 @@ import java.util.List;
 public class OrderRequest {
     
     @NotNull(message = "Shipping address ID is required")
-    private Long shippingAddressId;
+    private String shippingAddressId;
     
     @NotNull(message = "Billing address ID is required")
-    private Long billingAddressId;
+    private String billingAddressId;
     
     @Size(max = 1000, message = "Order notes must not exceed 1000 characters")
     private String notes;
@@ -28,13 +28,13 @@ public class OrderRequest {
     @Data
     public static class OrderItemRequest {
         @NotNull(message = "Product ID is required")
-        private Long productId;
+        private String productId;
         
         @NotNull(message = "Quantity is required")
         @Min(value = 1, message = "Quantity must be at least 1")
         @Max(value = 999, message = "Quantity cannot exceed 999")
         private Integer quantity;
         
-        private Long variantId;
+        private String variantId;
     }
 }

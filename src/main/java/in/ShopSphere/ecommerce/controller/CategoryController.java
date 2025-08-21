@@ -43,7 +43,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update a category", description = "Updates an existing product category. Admin only.")
     public ResponseEntity<CategoryResponse> updateCategory(
-            @Parameter(description = "Category ID") @PathVariable Long id,
+            @Parameter(description = "Category ID") @PathVariable String id,
             @Valid @RequestBody CategoryRequest request) {
         log.info("Updating category with ID: {}", id);
         CategoryResponse response = categoryService.updateCategory(id, request);
@@ -53,7 +53,7 @@ public class CategoryController {
     @GetMapping("/{id}")
     @Operation(summary = "Get category by ID", description = "Retrieves a category by its ID.")
     public ResponseEntity<CategoryResponse> getCategoryById(
-            @Parameter(description = "Category ID") @PathVariable Long id) {
+            @Parameter(description = "Category ID") @PathVariable String id) {
         CategoryResponse response = categoryService.getCategoryById(id);
         return ResponseEntity.ok(response);
     }
@@ -70,8 +70,31 @@ public class CategoryController {
     @Operation(summary = "Get all categories", description = "Retrieves all categories with pagination.")
     public ResponseEntity<PaginationResponse<CategoryResponse>> getAllCategories(
             @PageableDefault(size = 20) Pageable pageable) {
-        PaginationResponse<CategoryResponse> response = categoryService.getAllCategories(pageable);
-        return ResponseEntity.ok(response);
+        try {
+            log.info("Fetching all categories with pagination: page={}, size={}", pageable.getPageNumber(), pageable.getPageSize());
+            PaginationResponse<CategoryResponse> response = categoryService.getAllCategories(pageable);
+            log.info("Successfully fetched {} categories", response.getData().size());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error fetching categories: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(null);
+        }
+    }
+
+    @GetMapping("/simple")
+    @Operation(summary = "Get all categories (simple)", description = "Retrieves all categories as a simple list.")
+    public ResponseEntity<List<CategoryResponse>> getAllCategoriesSimple() {
+        try {
+            log.info("Fetching all categories (simple)");
+            List<CategoryResponse> response = categoryService.getActiveCategories();
+            log.info("Successfully fetched {} categories", response.size());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error fetching categories (simple): ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(null);
+        }
     }
 
     @GetMapping("/root")
@@ -84,7 +107,7 @@ public class CategoryController {
     @GetMapping("/{parentId}/subcategories")
     @Operation(summary = "Get subcategories", description = "Retrieves all subcategories of a parent category.")
     public ResponseEntity<List<CategoryResponse>> getSubCategories(
-            @Parameter(description = "Parent category ID") @PathVariable Long parentId) {
+            @Parameter(description = "Parent category ID") @PathVariable String parentId) {
         List<CategoryResponse> response = categoryService.getSubCategories(parentId);
         return ResponseEntity.ok(response);
     }
@@ -116,7 +139,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete a category", description = "Deletes a category. Admin only.")
     public ResponseEntity<ApiResponse> deleteCategory(
-            @Parameter(description = "Category ID") @PathVariable Long id) {
+            @Parameter(description = "Category ID") @PathVariable String id) {
         log.info("Deleting category with ID: {}", id);
         ApiResponse response = categoryService.deleteCategory(id);
         return ResponseEntity.ok(response);
@@ -126,7 +149,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Toggle category status", description = "Toggles the active status of a category. Admin only.")
     public ResponseEntity<ApiResponse> toggleCategoryStatus(
-            @Parameter(description = "Category ID") @PathVariable Long id) {
+            @Parameter(description = "Category ID") @PathVariable String id) {
         log.info("Toggling category status with ID: {}", id);
         ApiResponse response = categoryService.toggleCategoryStatus(id);
         return ResponseEntity.ok(response);
@@ -136,7 +159,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update category order", description = "Updates the sort order of a category. Admin only.")
     public ResponseEntity<ApiResponse> updateCategoryOrder(
-            @Parameter(description = "Category ID") @PathVariable Long id,
+            @Parameter(description = "Category ID") @PathVariable String id,
             @Parameter(description = "New sort order") @RequestParam Integer sortOrder) {
         log.info("Updating category order for ID: {} to: {}", id, sortOrder);
         ApiResponse response = categoryService.updateCategoryOrder(id, sortOrder);
@@ -147,8 +170,8 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Move category", description = "Moves a category to a different parent. Admin only.")
     public ResponseEntity<ApiResponse> moveCategory(
-            @Parameter(description = "Category ID") @PathVariable Long id,
-            @Parameter(description = "New parent category ID") @RequestParam Long newParentId) {
+            @Parameter(description = "Category ID") @PathVariable String id,
+            @Parameter(description = "New parent category ID") @RequestParam String newParentId) {
         log.info("Moving category with ID: {} to parent ID: {}", id, newParentId);
         ApiResponse response = categoryService.moveCategory(id, newParentId);
         return ResponseEntity.ok(response);

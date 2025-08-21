@@ -12,9 +12,9 @@ public interface CategoryService {
     
     CategoryResponse createCategory(CategoryRequest request);
     
-    CategoryResponse updateCategory(Long id, CategoryRequest request);
+    CategoryResponse updateCategory(String id, CategoryRequest request);
     
-    CategoryResponse getCategoryById(Long id);
+    CategoryResponse getCategoryById(String id);
     
     CategoryResponse getCategoryByName(String name);
     
@@ -22,7 +22,7 @@ public interface CategoryService {
     
     List<CategoryResponse> getRootCategories();
     
-    List<CategoryResponse> getSubCategories(Long parentId);
+    List<CategoryResponse> getSubCategories(String parentId);
     
     List<CategoryResponse> getActiveCategories();
     
@@ -30,11 +30,11 @@ public interface CategoryService {
     
     List<CategoryResponse> getCategoriesWithProducts();
     
-    ApiResponse deleteCategory(Long id);
+    ApiResponse deleteCategory(String id);
     
-    ApiResponse toggleCategoryStatus(Long id);
+    ApiResponse toggleCategoryStatus(String id);
     
-    ApiResponse updateCategoryOrder(Long id, Integer sortOrder);
+    ApiResponse updateCategoryOrder(String id, Integer sortOrder);
     
-    ApiResponse moveCategory(Long id, Long newParentId);
+    ApiResponse moveCategory(String id, String newParentId);
 }

@@ -1,5 +1,6 @@
 package in.ShopSphere.ecommerce.dto.category;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -8,13 +9,17 @@ import java.util.List;
 @Data
 public class CategoryResponse {
     
-    private Long id;
+    private String id;
     private String name;
     private String description;
     private String image;
     private Boolean isActive;
     private Integer sortOrder;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
     
     private CategorySummary parent;
@@ -23,7 +28,7 @@ public class CategoryResponse {
     
     @Data
     public static class CategorySummary {
-        private Long id;
+        private String id;
         private String name;
         private String description;
         private String image;

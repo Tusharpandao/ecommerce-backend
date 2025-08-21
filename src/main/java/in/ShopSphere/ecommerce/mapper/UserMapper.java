@@ -58,8 +58,8 @@ public interface UserMapper {
     User toUser(UserUpdateRequest request);
     
     @Mapping(target = "role", expression = "java(user.getRole().name())")
-    @Mapping(target = "createdAt", expression = "java(user.getCreatedAt().toString())")
-    @Mapping(target = "updatedAt", expression = "java(user.getUpdatedAt().toString())")
+    @Mapping(target = "createdAt", expression = "java(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null)")
+    @Mapping(target = "updatedAt", expression = "java(user.getUpdatedAt() != null ? user.getUpdatedAt().toString() : null)")
     AuthResponse.UserDto toAuthUserDto(User user);
     
     List<UserResponse> toUserResponseList(List<User> users);

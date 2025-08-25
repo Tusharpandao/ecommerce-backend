@@ -2,6 +2,7 @@ package in.ShopSphere.ecommerce.service;
 
 import in.ShopSphere.ecommerce.dto.common.ApiResponse;
 import in.ShopSphere.ecommerce.dto.common.PaginationResponse;
+import in.ShopSphere.ecommerce.dto.common.SearchFilters;
 import in.ShopSphere.ecommerce.dto.product.ProductRequest;
 import in.ShopSphere.ecommerce.dto.product.ProductResponse;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,8 @@ public interface ProductService {
     PaginationResponse<ProductResponse> getAllProducts(Pageable pageable);
     
     PaginationResponse<ProductResponse> searchProducts(String searchTerm, Pageable pageable);
+    
+    PaginationResponse<ProductResponse> searchProductsWithFilters(SearchFilters filters, Pageable pageable);
     
     PaginationResponse<ProductResponse> getProductsByCategory(String categoryId, Pageable pageable);
     
@@ -52,4 +55,6 @@ public interface ProductService {
     ApiResponse updateStock(String id, Integer quantity);
     
     ApiResponse updatePrice(String id, BigDecimal price, BigDecimal salePrice);
+    
+    void clearProductsCache();
 }

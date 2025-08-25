@@ -33,7 +33,7 @@ public class CartController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/add")
+    @PostMapping
     @Operation(summary = "Add item to cart", description = "Adds a product to the shopping cart.")
     public ResponseEntity<CartResponse> addToCart(
             @Valid @RequestBody CartRequest request) {
@@ -42,22 +42,22 @@ public class CartController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/items/{itemId}")
+    @PutMapping("/{productId}")
     @Operation(summary = "Update cart item", description = "Updates the quantity of an item in the cart.")
     public ResponseEntity<CartResponse> updateCartItem(
-            @Parameter(description = "Cart item ID") @PathVariable String itemId,
+            @Parameter(description = "Product ID") @PathVariable String productId,
             @Parameter(description = "New quantity") @RequestParam Integer quantity) {
-        log.info("Updating cart item: itemId={}, quantity={}", itemId, quantity);
-        CartResponse response = cartService.updateCartItem(itemId, quantity);
+        log.info("Updating cart item: productId={}, quantity={}", productId, quantity);
+        CartResponse response = cartService.updateCartItem(productId, quantity);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/items/{itemId}")
+    @DeleteMapping("/{productId}")
     @Operation(summary = "Remove item from cart", description = "Removes an item from the shopping cart.")
     public ResponseEntity<CartResponse> removeFromCart(
-            @Parameter(description = "Cart item ID") @PathVariable String itemId) {
-        log.info("Removing item from cart: itemId={}", itemId);
-        CartResponse response = cartService.removeFromCart(itemId);
+            @Parameter(description = "Product ID") @PathVariable String productId) {
+        log.info("Removing item from cart: productId={}", productId);
+        CartResponse response = cartService.removeFromCart(productId);
         return ResponseEntity.ok(response);
     }
 

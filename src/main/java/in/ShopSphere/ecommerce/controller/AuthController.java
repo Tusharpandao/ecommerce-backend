@@ -30,11 +30,12 @@ public class AuthController {
         try {
             AuthResponse authResponse = authService.login(request);
             
-            // Set JWT token in HTTP-only cookie
+            // Set JWT token in HTTP-only cookie for security
             response.addHeader("Set-Cookie", 
                 "jwt=" + authResponse.getToken() + "; HttpOnly; Secure; SameSite=Strict; Max-Age=" + 
                 (authResponse.getExpiresIn() / 1000));
             
+            // Also return token in response body for frontend storage (if needed)
             return ResponseEntity.ok(ApiResponse.success(authResponse, "Login successful"));
         } catch (Exception e) {
             log.error("Login failed: {}", e.getMessage());

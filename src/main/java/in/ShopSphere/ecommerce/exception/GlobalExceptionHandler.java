@@ -17,6 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -130,6 +131,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error("An unexpected error occurred", "INTERNAL_SERVER_ERROR")
                         .withPath(getRequestPath(request)));
+    }
+    
+    @ExceptionHandler(ClassCastException.class)
+    public ResponseEntity<ApiResponse> handleClassCastException(ClassCastException e, HttpServletRequest request) {
+        log.error("ClassCastException occurred: {}", e.getMessage(), e);
+        
+        String message = "Data type conversion error occurred. This might be due to cache serialization issues.";
+        if (e.getMessage() != null && e.getMessage().contains("LinkedHashMap")) {
+            message = "Cache data format error detected. Please try again or contact support if the issue persists.";
+        }
+        
+        ApiResponse response = ApiResponse.builder()
+            .success(false)
+            .message(message)
+            .error(new ApiResponse.ErrorInfo("DATA_TYPE_ERROR", message, message, message, message))
+            .timestamp(LocalDateTime.now())
+            .path(request.getRequestURI())
+            .build();
+        
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
     
     private String getRequestPath(WebRequest request) {

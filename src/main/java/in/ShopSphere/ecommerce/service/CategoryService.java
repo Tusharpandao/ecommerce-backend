@@ -2,6 +2,7 @@ package in.ShopSphere.ecommerce.service;
 
 import in.ShopSphere.ecommerce.dto.category.CategoryRequest;
 import in.ShopSphere.ecommerce.dto.category.CategoryResponse;
+import in.ShopSphere.ecommerce.dto.category.CategorySimpleResponse;
 import in.ShopSphere.ecommerce.dto.common.ApiResponse;
 import in.ShopSphere.ecommerce.dto.common.PaginationResponse;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,8 @@ public interface CategoryService {
     
     List<CategoryResponse> getActiveCategories();
     
+    List<CategorySimpleResponse> getActiveCategoriesSimple();
+    
     PaginationResponse<CategoryResponse> searchCategories(String searchTerm, Pageable pageable);
     
     List<CategoryResponse> getCategoriesWithProducts();
@@ -37,4 +40,10 @@ public interface CategoryService {
     ApiResponse updateCategoryOrder(String id, Integer sortOrder);
     
     ApiResponse moveCategory(String id, String newParentId);
+    
+    long getCategoryCount();
+    
+    int initializeBasicCategories();
+    
+    void clearCategoryCache();
 }

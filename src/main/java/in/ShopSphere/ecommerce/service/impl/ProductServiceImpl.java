@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import in.ShopSphere.ecommerce.dto.common.SearchFilters;
 
 @Service
 @RequiredArgsConstructor
@@ -141,7 +142,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Cacheable(value = "products")
+    // @Cacheable(value = "products") // Temporarily disabled due to Redis deserialization issue
     public PaginationResponse<ProductResponse> getAllProducts(Pageable pageable) {
         Page<Product> products = productRepository.findByIsActiveTrue(pageable);
         List<ProductResponse> productResponses = productMapper.toProductResponseList(products.getContent());
@@ -158,7 +159,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Cacheable(value = "products", key = "#searchTerm + #pageable.pageNumber + #pageable.pageSize")
+    // @Cacheable(value = "products", key = "#searchTerm + #pageable.pageNumber + #pageable.pageSize") // Temporarily disabled
     public PaginationResponse<ProductResponse> searchProducts(String searchTerm, Pageable pageable) {
         Page<Product> products = productRepository.searchProducts(searchTerm, pageable);
         List<ProductResponse> productResponses = productMapper.toProductResponseList(products.getContent());
@@ -175,7 +176,82 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Cacheable(value = "products", key = "#categoryId + #pageable.pageNumber + #pageable.pageSize")
+    public PaginationResponse<ProductResponse> searchProductsWithFilters(SearchFilters filters, Pageable pageable) {
+        log.info("Searching products with filters: {}", filters);
+        
+        // Start with all active products
+        Page<Product> products = productRepository.findByIsActiveTrue(pageable);
+        List<Product> filteredProducts = products.getContent();
+        
+        // Apply category filter
+        if (filters.getCategory() != null && !filters.getCategory().isEmpty()) {
+            // Find category by name
+            Category category = categoryRepository.findByName(filters.getCategory())
+                .orElse(null);
+            
+            if (category != null) {
+                filteredProducts = filteredProducts.stream()
+                    .filter(p -> p.getCategory().getName().equals(filters.getCategory()))
+                    .toList();
+            }
+        }
+        
+        // Apply price filters
+        if (filters.getMinPrice() != null) {
+            filteredProducts = filteredProducts.stream()
+                .filter(p -> p.getCurrentPrice().doubleValue() >= filters.getMinPrice())
+                .toList();
+        }
+        
+        if (filters.getMaxPrice() != null) {
+            filteredProducts = filteredProducts.stream()
+                .filter(p -> p.getCurrentPrice().doubleValue() <= filters.getMaxPrice())
+                .toList();
+        }
+        
+        // Apply rating filter
+        if (filters.getRating() != null) {
+            filteredProducts = filteredProducts.stream()
+                .filter(p -> p.getRating().doubleValue() >= filters.getRating())
+                .toList();
+        }
+        
+        // Apply stock filter
+        if (filters.getInStock() != null && filters.getInStock()) {
+            filteredProducts = filteredProducts.stream()
+                .filter(p -> p.getStockQuantity() > 0)
+                .toList();
+        }
+        
+        // Apply search term filter
+        if (filters.getSearchTerm() != null && !filters.getSearchTerm().isEmpty()) {
+            String searchTerm = filters.getSearchTerm().toLowerCase();
+            filteredProducts = filteredProducts.stream()
+                .filter(p -> p.getName().toLowerCase().contains(searchTerm) || 
+                           p.getDescription().toLowerCase().contains(searchTerm))
+                .toList();
+        }
+        
+        // Convert to responses
+        List<ProductResponse> productResponses = productMapper.toProductResponseList(filteredProducts);
+        
+        // Create pagination info (simplified for filtered results)
+        int totalElements = filteredProducts.size();
+        int totalPages = (int) Math.ceil((double) totalElements / pageable.getPageSize());
+        
+        return PaginationResponse.<ProductResponse>builder()
+            .data(productResponses)
+            .pagination(PaginationResponse.PaginationInfo.builder()
+                .page(pageable.getPageNumber())
+                .limit(pageable.getPageSize())
+                .total(totalElements)
+                .totalPages(totalPages)
+                .build())
+            .build();
+    }
+
+    @Override
+    // @Cacheable(value = "products", key = "#categoryId + #pageable.pageNumber + #pageable.pageSize") // Temporarily disabled
     public PaginationResponse<ProductResponse> getProductsByCategory(String categoryId, Pageable pageable) {
         Page<Product> products = productRepository.findByCategoryIdAndIsActiveTrue(categoryId, pageable);
         List<ProductResponse> productResponses = productMapper.toProductResponseList(products.getContent());
@@ -192,7 +268,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Cacheable(value = "products", key = "#sellerId + #pageable.pageNumber + #pageable.pageSize")
+    // @Cacheable(value = "products", key = "#sellerId + #pageable.pageNumber + #pageable.pageSize") // Temporarily disabled
     public PaginationResponse<ProductResponse> getProductsBySeller(String sellerId, Pageable pageable) {
         // This would need a custom query or we'd need to get the User first
         // For now, implementing a basic version
@@ -424,7 +500,14 @@ public class ProductServiceImpl implements ProductService {
         
         log.info("Price updated successfully for product with ID: {}", id);
         
-        return ApiResponse.success(null, "Price updated successfully");
+        return ApiResponse.success(null, "Product price updated successfully");
+    }
+    
+    @Override
+    @CacheEvict(value = {"products", "product"}, allEntries = true)
+    public void clearProductsCache() {
+        log.info("Products cache cleared");
+        // The @CacheEvict annotation will handle clearing the cache
     }
 
     private User getCurrentUser() {

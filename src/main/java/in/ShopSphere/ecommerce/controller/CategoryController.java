@@ -2,6 +2,7 @@ package in.ShopSphere.ecommerce.controller;
 
 import in.ShopSphere.ecommerce.dto.category.CategoryRequest;
 import in.ShopSphere.ecommerce.dto.category.CategoryResponse;
+import in.ShopSphere.ecommerce.dto.category.CategorySimpleResponse;
 import in.ShopSphere.ecommerce.dto.common.ApiResponse;
 import in.ShopSphere.ecommerce.dto.common.PaginationResponse;
 import in.ShopSphere.ecommerce.service.CategoryService;
@@ -18,7 +19,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/categories")
@@ -37,6 +41,46 @@ public class CategoryController {
         log.info("Creating category: {}", request.getName());
         CategoryResponse response = categoryService.createCategory(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/init")
+    @Operation(summary = "Initialize basic categories", description = "Creates basic categories for testing purposes.")
+    public ResponseEntity<ApiResponse> initializeCategories() {
+        try {
+            log.info("Initializing basic categories");
+            
+            // Check if categories already exist
+            long existingCount = categoryService.getCategoryCount();
+            if (existingCount > 0) {
+                return ResponseEntity.ok(ApiResponse.success(null, 
+                    "Categories already exist. Found " + existingCount + " categories."));
+            }
+            
+            // Create basic categories
+            int createdCount = categoryService.initializeBasicCategories();
+            
+            log.info("Successfully initialized {} basic categories", createdCount);
+            return ResponseEntity.ok(ApiResponse.success(null, 
+                "Successfully initialized " + createdCount + " basic categories"));
+        } catch (Exception e) {
+            log.error("Error initializing categories: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error("Failed to initialize categories: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/cache/clear")
+    @Operation(summary = "Clear category cache", description = "Clears all cached category data from Redis.")
+    public ResponseEntity<ApiResponse> clearCategoryCache() {
+        try {
+            log.info("Clearing category cache");
+            categoryService.clearCategoryCache();
+            return ResponseEntity.ok(ApiResponse.success(null, "Category cache cleared successfully"));
+        } catch (Exception e) {
+            log.error("Error clearing category cache: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error("Failed to clear category cache: " + e.getMessage()));
+        }
     }
 
     @PutMapping("/{id}")
@@ -83,13 +127,20 @@ public class CategoryController {
     }
 
     @GetMapping("/simple")
-    @Operation(summary = "Get all categories (simple)", description = "Retrieves all categories as a simple list.")
-    public ResponseEntity<List<CategoryResponse>> getAllCategoriesSimple() {
+    @Operation(summary = "Get all categories (simple)", description = "Retrieves all categories as a simple list for frontend consumption.")
+    public ResponseEntity<List<CategorySimpleResponse>> getAllCategoriesSimple() {
         try {
             log.info("Fetching all categories (simple)");
-            List<CategoryResponse> response = categoryService.getActiveCategories();
-            log.info("Successfully fetched {} categories", response.size());
-            return ResponseEntity.ok(response);
+            List<CategorySimpleResponse> response = categoryService.getActiveCategoriesSimple();
+            
+            if (response != null && !response.isEmpty()) {
+                log.info("Successfully fetched {} categories (simple)", response.size());
+                return ResponseEntity.ok(response);
+            } else {
+                log.warn("No categories found, returning empty list");
+                return ResponseEntity.ok(List.of());
+            }
+            
         } catch (Exception e) {
             log.error("Error fetching categories (simple): ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -133,6 +184,76 @@ public class CategoryController {
             @PageableDefault(size = 20) Pageable pageable) {
         PaginationResponse<CategoryResponse> response = categoryService.searchCategories(searchTerm, pageable);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/health")
+    @Operation(summary = "Category service health check", description = "Checks if the category service and database are working.")
+    public ResponseEntity<Map<String, Object>> healthCheck() {
+        try {
+            log.info("Performing category service health check");
+            
+            // Check if we can connect to the database
+            long categoryCount = categoryService.getCategoryCount();
+            
+            Map<String, Object> health = new HashMap<>();
+            health.put("status", "UP");
+            health.put("timestamp", LocalDateTime.now());
+            health.put("categoryCount", categoryCount);
+            health.put("message", "Category service is healthy");
+            
+            log.info("Health check successful. Found {} categories", categoryCount);
+            return ResponseEntity.ok(health);
+        } catch (Exception e) {
+            log.error("Health check failed: ", e);
+            
+            Map<String, Object> health = new HashMap<>();
+            health.put("status", "DOWN");
+            health.put("timestamp", LocalDateTime.now());
+            health.put("error", e.getMessage());
+            health.put("message", "Category service is unhealthy");
+            
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(health);
+        }
+    }
+
+    @GetMapping("/test-simple")
+    @Operation(summary = "Test simple categories endpoint", description = "Test endpoint to verify simple categories are working correctly.")
+    public ResponseEntity<Map<String, Object>> testSimpleCategories() {
+        try {
+            log.info("Testing simple categories endpoint");
+            
+            // Test the simple categories method
+            List<CategorySimpleResponse> simpleCategories = categoryService.getActiveCategoriesSimple();
+            
+            // Test the full categories method
+            List<CategoryResponse> fullCategories = categoryService.getActiveCategories();
+            
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", true);
+            result.put("simpleCategoriesCount", simpleCategories != null ? simpleCategories.size() : 0);
+            result.put("fullCategoriesCount", fullCategories != null ? fullCategories.size() : 0);
+            result.put("simpleCategoriesType", simpleCategories != null && !simpleCategories.isEmpty() ? 
+                simpleCategories.get(0).getClass().getSimpleName() : "null");
+            result.put("fullCategoriesType", fullCategories != null && !fullCategories.isEmpty() ? 
+                fullCategories.get(0).getClass().getSimpleName() : "null");
+            result.put("message", "Categories test completed successfully");
+            
+            log.info("Test completed successfully. Simple: {}, Full: {}", 
+                simpleCategories != null ? simpleCategories.size() : 0,
+                fullCategories != null ? fullCategories.size() : 0);
+            
+            return ResponseEntity.ok(result);
+            
+        } catch (Exception e) {
+            log.error("Test failed: ", e);
+            
+            Map<String, Object> result = new HashMap<>();
+            result.put("success", false);
+            result.put("error", e.getMessage());
+            result.put("message", "Categories test failed");
+            
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+        }
     }
 
     @DeleteMapping("/{id}")

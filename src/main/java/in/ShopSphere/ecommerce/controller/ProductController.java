@@ -2,6 +2,7 @@ package in.ShopSphere.ecommerce.controller;
 
 import in.ShopSphere.ecommerce.dto.common.ApiResponse;
 import in.ShopSphere.ecommerce.dto.common.PaginationResponse;
+import in.ShopSphere.ecommerce.dto.common.SearchFilters;
 import in.ShopSphere.ecommerce.dto.product.ProductRequest;
 import in.ShopSphere.ecommerce.dto.product.ProductResponse;
 import in.ShopSphere.ecommerce.service.ProductService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import in.ShopSphere.ecommerce.dto.common.SearchFilters;
 
 @RestController
 @RequestMapping("/products")
@@ -98,20 +100,39 @@ public class ProductController {
         }
     }
     
-    @GetMapping("/search")
-    @Operation(summary = "Search products", description = "Search products by term")
-    public ResponseEntity<ApiResponse> searchProducts(
-            @RequestParam String q,
+    @PostMapping("/search/filters")
+    @Operation(summary = "Search products with filters", description = "Search products using advanced filters")
+    public ResponseEntity<ApiResponse> searchProductsWithFilters(
+            @Valid @RequestBody SearchFilters filters,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         try {
+            log.info("Searching products with filters: {}", filters);
             Pageable pageable = PageRequest.of(page, size);
-            PaginationResponse<ProductResponse> products = productService.searchProducts(q, pageable);
-            return ResponseEntity.ok(ApiResponse.success(products, "Products search completed"));
+            PaginationResponse<ProductResponse> products = productService.searchProductsWithFilters(filters, pageable);
+            return ResponseEntity.ok(ApiResponse.success(products, "Products search completed successfully"));
         } catch (Exception e) {
-            log.error("Product search failed: {}", e.getMessage());
+            log.error("Products search failed: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("Product search failed", e.getMessage()));
+                .body(ApiResponse.error("Products search failed", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Search products by text", description = "Search products by name or description")
+    public ResponseEntity<ApiResponse> searchProducts(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        try {
+            log.info("Searching products with query: {}", query);
+            Pageable pageable = PageRequest.of(page, size);
+            PaginationResponse<ProductResponse> products = productService.searchProducts(query, pageable);
+            return ResponseEntity.ok(ApiResponse.success(products, "Products search completed successfully"));
+        } catch (Exception e) {
+            log.error("Products search failed: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error("Products search failed", e.getMessage()));
         }
     }
     
@@ -306,6 +327,20 @@ public class ProductController {
             log.error("Price update failed: {}", e.getMessage());
             return ResponseEntity.badRequest()
                 .body(ApiResponse.error("Price update failed", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/cache/clear")
+    @Operation(summary = "Clear products cache", description = "Clears all cached product data from Redis.")
+    public ResponseEntity<ApiResponse> clearProductsCache() {
+        try {
+            log.info("Clearing products cache");
+            productService.clearProductsCache();
+            return ResponseEntity.ok(ApiResponse.success(null, "Products cache cleared successfully"));
+        } catch (Exception e) {
+            log.error("Error clearing products cache: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error("Failed to clear products cache: " + e.getMessage()));
         }
     }
 }

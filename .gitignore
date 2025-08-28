@@ -34,6 +34,7 @@ build/
 ### VS Code ###
 .vscode/
 # Ignore docs and temporary files
+*.gz
 DATA_IMPORT_README.md
 PRODUCT_FIELDS_SUMMARY.md
 demo.json
